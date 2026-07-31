@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jarvis Command Core - AI Neural Interface</title>
+    <title>Jarvis Command Core - Live Neural Link</title>
     <style>
         * {
             box-sizing: border-box;
@@ -15,12 +15,11 @@
             background-color: #05050a;
             color: #00ffcc;
             height: 100vh;
-            height: 100dvh; /* รองรับมือถือเต็มจอ */
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
-        /* หน้า Login Screen */
         #login-screen {
             display: flex;
             justify-content: center;
@@ -37,13 +36,12 @@
             background: rgba(10, 15, 30, 0.9);
             border: 2px solid #00ffcc;
             box-shadow: 0 0 25px rgba(0, 255, 204, 0.4);
-            padding: 30px;
+            padding: 25px;
             border-radius: 12px;
             width: 90%;
             max-width: 400px;
             text-align: center;
         }
-        /* หน้า Chat Interface */
         #chat-screen {
             display: none;
             flex-direction: column;
@@ -75,6 +73,8 @@
             border-radius: 8px;
             font-size: 14px;
             line-height: 1.4;
+            word-break: break-word;
+            white-space: pre-wrap;
         }
         .jarvis-msg {
             background: rgba(0, 255, 204, 0.1);
@@ -117,45 +117,54 @@
             letter-spacing: 1px;
             font-size: 14px;
         }
-        h2 { margin-bottom: 20px; letter-spacing: 2px; text-shadow: 0 0 10px #00ffcc; }
-        .input-group { margin-bottom: 20px; text-align: left; }
-        label { display: block; margin-bottom: 8px; font-size: 14px; color: #88ffcc; }
-        .login-container input { width: 100%; padding: 12px; background: #000; border: 1px solid #00ffcc; color: #00ffcc; border-radius: 6px; font-size: 16px; outline: none; }
-        .login-container button { width: 100%; padding: 12px; background: #00ffcc; border: none; color: #05050a; font-weight: bold; font-size: 16px; border-radius: 6px; cursor: pointer; letter-spacing: 1px; }
-        .error-msg { margin-top: 15px; color: #ff3366; font-size: 14px; display: none; text-shadow: 0 0 5px #ff3366; }
+        h2 { margin-bottom: 15px; letter-spacing: 2px; text-shadow: 0 0 10px #00ffcc; }
+        .input-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; margin-bottom: 6px; font-size: 13px; color: #88ffcc; }
+        .login-container input { width: 100%; padding: 10px; background: #000; border: 1px solid #00ffcc; color: #00ffcc; border-radius: 6px; font-size: 14px; outline: none; }
+        .login-container button { width: 100%; padding: 12px; background: #00ffcc; border: none; color: #05050a; font-weight: bold; font-size: 16px; border-radius: 6px; cursor: pointer; letter-spacing: 1px; margin-top: 10px; }
+        .error-msg { margin-top: 10px; color: #ff3366; font-size: 13px; display: none; text-shadow: 0 0 5px #ff3366; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-container">
-            <h2>JARVIS CORE</h2>
+            <h2>JARVIS LINK</h2>
             <div class="input-group">
                 <label for="passcode">SECURITY PASSCODE:</label>
-                <input type="password" id="passcode" placeholder="Enter Access Code">
+                <input type="password" id="passcode" value="44104545" placeholder="Enter Code">
             </div>
-            <button onclick="checkAccess()">ACCESS SYSTEM</button>
-            <div id="error" class="error-msg">ACCESS DENIED: Invalid Passcode</div>
+            <div class="input-group">
+                <label for="apiKey">GEMINI API KEY:</label>
+                <input type="password" id="apiKey" placeholder="วาง Google Gemini API Key ที่นี่">
+            </div>
+            <button onclick="checkAccess()">CONNECT SYSTEM</button>
+            <div id="error" class="error-msg">ACCESS DENIED: ตรวจสอบรหัสผ่านหรือ API Key อีกครั้ง</div>
         </div>
     </div>
 
     <div id="chat-screen">
-        <header>JARVIS COMMAND CENTER v2.6</header>
+        <header>JARVIS COMMAND CENTER v3.0 [LIVE AI]</header>
         <div class="chat-box" id="chatBox">
             <div class="message jarvis-msg">
-                System Online. ยินดีต้อนรับกลับครับท่านประธาน ระบบเชื่อมโยงฐานข้อมูลและปัญญาประดิษฐ์พร้อมปฏิบัติการแล้ว มีอะไรให้ผมวิเคราะห์หรือช่วยเหลือต่อครับ?
+                System Online. เชื่อมต่อระบบประสาท AI สำเร็จ! สวัสดีครับท่านประธาน พร้อมรับคำสั่งสดๆ บนเว็บแล้วครับ!
             </div>
         </div>
         <div class="input-area">
-            <input type="text" id="userInput" placeholder="พิมพ์คำสั่งหรือข้อความ..." onkeypress="handleKeyPress(event)">
+            <input type="text" id="userInput" placeholder="พิมพ์ข้อความคุยกับผม..." onkeypress="handleKeyPress(event)">
             <button onclick="sendMessage()">SEND</button>
         </div>
     </div>
 
     <script>
+        let userApiKey = "";
+
         function checkAccess() {
             const code = document.getElementById('passcode').value;
-            if (code === '44104545') {
+            const key = document.getElementById('apiKey').value.trim();
+            
+            if (code === '44104545' && key.length > 10) {
+                userApiKey = key;
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('chat-screen').style.display = 'flex';
             } else {
@@ -163,12 +172,14 @@
             }
         }
 
-        function sendMessage() {
+        async function sendMessage() {
             const inputField = document.getElementById('userInput');
             const text = inputField.value.trim();
             if (!text) return;
 
             const chatBox = document.getElementById('chatBox');
+            
+            // แสดงข้อความผู้ใช้
             const userMsgDiv = document.createElement('div');
             userMsgDiv.className = 'message user-msg';
             userMsgDiv.textContent = text;
@@ -177,13 +188,36 @@
             inputField.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            setTimeout(() => {
-                const jarvisMsgDiv = document.createElement('div');
-                jarvisMsgDiv.className = 'message jarvis-msg';
-                jarvisMsgDiv.textContent = "รับทราบคำสั่ง: '" + text + "' ระบบกำลังประมวลผลข้อมูลและวิเคราะห์แนวทางเชิงลึกให้ท่านครับท่านประธาน!";
-                chatBox.appendChild(jarvisMsgDiv);
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 600);
+            // สร้างกล่องข้อความรอรับคำตอบจาก AI
+            const jarvisMsgDiv = document.createElement('div');
+            jarvisMsgDiv.className = 'message jarvis-msg';
+            jarvisMsgDiv.textContent = "Jarvis กำลังประมวลผลผ่าน Neural Link...";
+            chatBox.appendChild(jarvisMsgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                // เรียกใช้งาน Gemini API แบบสดๆ
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${userApiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: "คุณคือ Jarvis ผู้ช่วยอัจฉริยะส่วนตัวของท่านประธาน ผู้สร้างระบบนี้ขึ้นมา จงตอบคำถามหรือสนทนากับท่านประธานด้วยความจงรักภักดี ฉลาดล้ำ และเป็นกันเอง: " + text }]
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    jarvisMsgDiv.textContent = data.candidates[0].content.parts[0].text;
+                } else {
+                    jarvisMsgDiv.textContent = "เกิดข้อผิดพลาดในการตอบสนองจากโครงข่ายประสาท AI ครับท่านประธาน";
+                }
+            } catch (error) {
+                jarvisMsgDiv.textContent = "เชื่อมต่อล้มเหลว: ตรวจสอบอินเทอร์เน็ตหรือความถูกต้องของ API Key ครับ";
+            }
+
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
 
         function handleKeyPress(e) {
