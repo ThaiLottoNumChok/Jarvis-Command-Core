@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis Command Core - Restricted Access</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        body {
+            background-color: #05050a;
+            color: #00ffcc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .login-container {
+            background: rgba(10, 15, 30, 0.85);
+            border: 2px solid #00ffcc;
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.4);
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #00ffcc;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #88ffcc;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #000;
+            border: 1px solid #00ffcc;
+            color: #00ffcc;
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+        }
+        input:focus {
+            box-shadow: 0 0 10px #00ffcc;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #00ffcc;
+            border: none;
+            color: #05050a;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+            letter-spacing: 1px;
+        }
+        button:hover {
+            background: #00cca3;
+            box-shadow: 0 0 15px #00ffcc;
+        }
+        .error-msg {
+            margin-top: 15px;
+            color: #ff3366;
+            font-size: 14px;
+            display: none;
+            text-shadow: 0 0 5px #ff3366;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>JARVIS CORE</h2>
+        <div class="input-group">
+            <label for="passcode">SECURITY PASSCODE:</label>
+            <input type="password" id="passcode" placeholder="Enter Access Code">
+        </div>
+        <button onclick="checkAccess()">ACCESS SYSTEM</button>
+        <div id="error" class="error-msg">ACCESS DENIED: Invalid Passcode</div>
+    </div>
+
+    <script>
+        function checkAccess() {
+            const code = document.getElementById('passcode').value;
+            // ตั้งรหัสผ่านใหม่ตามที่ท่านสั่งการ
+            if (code === '44104545') {
+                alert('ACCESS GRANTED: Welcome back, Sir.');
+                // สเต็ปต่อไปเดี๋ยวเราทำหน้าจอแชทบัญชาการหลักต่อครับ
+            } else {
+                document.getElementById('error').style.display = 'block';
+            }
+        }
+    </script>
+
+</body>
+</html>
