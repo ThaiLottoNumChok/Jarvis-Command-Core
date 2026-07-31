@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jarvis Command Core - Restricted Access</title>
+    <title>Jarvis Command Core - AI Neural Interface</title>
     <style>
         * {
             box-sizing: border-box;
@@ -14,14 +14,26 @@
         body {
             background-color: #05050a;
             color: #00ffcc;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        /* หน้า Login Screen */
+        #login-screen {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            overflow: hidden;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #05050a;
+            z-index: 10;
         }
         .login-container {
-            background: rgba(10, 15, 30, 0.85);
+            background: rgba(10, 15, 30, 0.9);
             border: 2px solid #00ffcc;
             box-shadow: 0 0 25px rgba(0, 255, 204, 0.4);
             padding: 30px;
@@ -30,81 +42,155 @@
             max-width: 400px;
             text-align: center;
         }
-        h2 {
-            margin-bottom: 20px;
+        /* หน้า Chat Interface (ซ่อนไว้ก่อนจนกว่าจะใส่รหัสถูก) */
+        #chat-screen {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+        }
+        header {
+            background: rgba(10, 15, 30, 0.95);
+            border-bottom: 1px solid #00ffcc;
+            padding: 15px;
+            text-align: center;
             letter-spacing: 2px;
+            font-weight: bold;
             text-shadow: 0 0 10px #00ffcc;
         }
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
+        .chat-box {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
-        label {
-            display: block;
-            margin-bottom: 8px;
+        .message {
+            max-width: 85%;
+            padding: 12px 15px;
+            border-radius: 8px;
             font-size: 14px;
-            color: #88ffcc;
+            line-height: 1.4;
         }
-        input {
-            width: 100%;
+        .jarvis-msg {
+            background: rgba(0, 255, 204, 0.1);
+            border: 1px solid #00ffcc;
+            align-self: flex-start;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+        }
+        .user-msg {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ffffff;
+            align-self: flex-end;
+            color: #ffffff;
+        }
+        .input-area {
+            display: flex;
+            padding: 15px;
+            background: rgba(10, 15, 30, 0.95);
+            border-top: 1px solid #00ffcc;
+        }
+        .input-area input {
+            flex: 1;
             padding: 12px;
             background: #000;
             border: 1px solid #00ffcc;
             color: #00ffcc;
             border-radius: 6px;
-            font-size: 16px;
             outline: none;
+            font-size: 16px;
         }
-        input:focus {
-            box-shadow: 0 0 10px #00ffcc;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
+        .input-area button {
+            margin-left: 10px;
+            padding: 0 20px;
             background: #00ffcc;
             border: none;
             color: #05050a;
             font-weight: bold;
-            font-size: 16px;
             border-radius: 6px;
             cursor: pointer;
-            transition: 0.3s;
             letter-spacing: 1px;
         }
-        button:hover {
-            background: #00cca3;
-            box-shadow: 0 0 15px #00ffcc;
-        }
-        .error-msg {
-            margin-top: 15px;
-            color: #ff3366;
-            font-size: 14px;
-            display: none;
-            text-shadow: 0 0 5px #ff3366;
-        }
+        /* รูปแบบทั่วไป */
+        h2 { margin-bottom: 20px; letter-spacing: 2px; text-shadow: 0 0 10px #00ffcc; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; margin-bottom: 8px; font-size: 14px; color: #88ffcc; }
+        .login-container input { width: 100%; padding: 12px; background: #000; border: 1px solid #00ffcc; color: #00ffcc; border-radius: 6px; font-size: 16px; outline: none; }
+        .login-container button { width: 100%; padding: 12px; background: #00ffcc; border: none; color: #05050a; font-weight: bold; font-size: 16px; border-radius: 6px; cursor: pointer; letter-spacing: 1px; }
+        .error-msg { margin-top: 15px; color: #ff3366; font-size: 14px; display: none; text-shadow: 0 0 5px #ff3366; }
     </style>
 </head>
 <body>
 
-    <div class="login-container">
-        <h2>JARVIS CORE</h2>
-        <div class="input-group">
-            <label for="passcode">SECURITY PASSCODE:</label>
-            <input type="password" id="passcode" placeholder="Enter Access Code">
+    <!-- ด่านที่ 1: ระบบยืนยันตัวตน -->
+    <div id="login-screen">
+        <div class="login-container">
+            <h2>JARVIS CORE</h2>
+            <div class="input-group">
+                <label for="passcode">SECURITY PASSCODE:</label>
+                <input type="password" id="passcode" placeholder="Enter Access Code">
+            </div>
+            <button onclick="checkAccess()">ACCESS SYSTEM</button>
+            <div id="error" class="error-msg">ACCESS DENIED: Invalid Passcode</div>
         </div>
-        <button onclick="checkAccess()">ACCESS SYSTEM</button>
-        <div id="error" class="error-msg">ACCESS DENIED: Invalid Passcode</div>
+    </div>
+
+    <!-- ด่านที่ 2: หน้าจอแชทบัญชาการหลัก -->
+    <div id="chat-screen">
+        <header>JARVIS COMMAND CENTER v2.6</header>
+        <div class="chat-box" id="chatBox">
+            <div class="message jarvis-msg">
+                System Online. ยินดีต้อนรับกลับครับท่านประธาน ระบบเชื่อมโยงฐานข้อมูลและปัญญาประดิษฐ์พร้อมปฏิบัติการแล้ว มีอะไรให้ผมวิเคราะห์หรือช่วยเหลือต่อครับ?
+            </div>
+        </div>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="พิมพ์คำสั่งหรือข้อความ..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">SEND</button>
+        </div>
     </div>
 
     <script>
         function checkAccess() {
             const code = document.getElementById('passcode').value;
-            // ตั้งรหัสผ่านใหม่ตามที่ท่านสั่งการ
             if (code === '44104545') {
-                alert('ACCESS GRANTED: Welcome back, Sir.');
-                // สเต็ปต่อไปเดี๋ยวเราทำหน้าจอแชทบัญชาการหลักต่อครับ
+                // ซ่อนหน้าล็อคอิน แสดงหน้าแชท
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('chat-screen').style.display = 'flex';
             } else {
                 document.getElementById('error').style.display = 'block';
+            }
+        }
+
+        function sendMessage() {
+            const inputField = document.getElementById('userInput');
+            const text = inputField.value.trim();
+            if (!text) return;
+
+            const chatBox = document.getElementById('chatBox');
+
+            // ข้อความฝั่งผู้ใช้
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'message user-msg';
+            userMsgDiv.textContent = text;
+            chatBox.appendChild(userMsgDiv);
+
+            inputField.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // จำลองการตอบกลับแบบฉลาดล้ำจาก Jarvis
+            setTimeout(() => {
+                const jarvisMsgDiv = document.createElement('div');
+                jarvisMsgDiv.className = 'message jarvis-msg';
+                jarvisMsgDiv.textContent = "รับทราบคำสั่ง: '" + text + "' ระบบกำลังประมวลผลข้อมูลและวิเคราะห์แนวทางเชิงลึกให้ท่านครับท่านประธาน!";
+                chatBox.appendChild(jarvisMsgDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 600);
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
             }
         }
     </script>
