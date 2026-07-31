@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Jarvis Command Core - AI Neural Interface</title>
     <style>
         * {
@@ -15,6 +15,7 @@
             background-color: #05050a;
             color: #00ffcc;
             height: 100vh;
+            height: 100dvh; /* รองรับมือถือเต็มจอ */
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -24,9 +25,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            height: 100%;
             width: 100%;
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             background-color: #05050a;
@@ -42,21 +43,23 @@
             max-width: 400px;
             text-align: center;
         }
-        /* หน้า Chat Interface (ซ่อนไว้ก่อนจนกว่าจะใส่รหัสถูก) */
+        /* หน้า Chat Interface */
         #chat-screen {
             display: none;
             flex-direction: column;
-            height: 100vh;
+            height: 100%;
             width: 100%;
+            overflow: hidden;
         }
         header {
             background: rgba(10, 15, 30, 0.95);
             border-bottom: 1px solid #00ffcc;
-            padding: 15px;
+            padding: 12px;
             text-align: center;
             letter-spacing: 2px;
             font-weight: bold;
             text-shadow: 0 0 10px #00ffcc;
+            font-size: 14px;
         }
         .chat-box {
             flex: 1;
@@ -87,13 +90,14 @@
         }
         .input-area {
             display: flex;
-            padding: 15px;
-            background: rgba(10, 15, 30, 0.95);
+            padding: 10px 15px;
+            background: rgba(10, 15, 30, 0.98);
             border-top: 1px solid #00ffcc;
+            width: 100%;
         }
         .input-area input {
             flex: 1;
-            padding: 12px;
+            padding: 10px 12px;
             background: #000;
             border: 1px solid #00ffcc;
             color: #00ffcc;
@@ -103,7 +107,7 @@
         }
         .input-area button {
             margin-left: 10px;
-            padding: 0 20px;
+            padding: 0 18px;
             background: #00ffcc;
             border: none;
             color: #05050a;
@@ -111,8 +115,8 @@
             border-radius: 6px;
             cursor: pointer;
             letter-spacing: 1px;
+            font-size: 14px;
         }
-        /* รูปแบบทั่วไป */
         h2 { margin-bottom: 20px; letter-spacing: 2px; text-shadow: 0 0 10px #00ffcc; }
         .input-group { margin-bottom: 20px; text-align: left; }
         label { display: block; margin-bottom: 8px; font-size: 14px; color: #88ffcc; }
@@ -123,7 +127,6 @@
 </head>
 <body>
 
-    <!-- ด่านที่ 1: ระบบยืนยันตัวตน -->
     <div id="login-screen">
         <div class="login-container">
             <h2>JARVIS CORE</h2>
@@ -136,7 +139,6 @@
         </div>
     </div>
 
-    <!-- ด่านที่ 2: หน้าจอแชทบัญชาการหลัก -->
     <div id="chat-screen">
         <header>JARVIS COMMAND CENTER v2.6</header>
         <div class="chat-box" id="chatBox">
@@ -154,7 +156,6 @@
         function checkAccess() {
             const code = document.getElementById('passcode').value;
             if (code === '44104545') {
-                // ซ่อนหน้าล็อคอิน แสดงหน้าแชท
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('chat-screen').style.display = 'flex';
             } else {
@@ -168,8 +169,6 @@
             if (!text) return;
 
             const chatBox = document.getElementById('chatBox');
-
-            // ข้อความฝั่งผู้ใช้
             const userMsgDiv = document.createElement('div');
             userMsgDiv.className = 'message user-msg';
             userMsgDiv.textContent = text;
@@ -178,7 +177,6 @@
             inputField.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // จำลองการตอบกลับแบบฉลาดล้ำจาก Jarvis
             setTimeout(() => {
                 const jarvisMsgDiv = document.createElement('div');
                 jarvisMsgDiv.className = 'message jarvis-msg';
