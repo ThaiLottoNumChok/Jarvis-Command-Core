@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jarvis Command Core - Live Neural Link</title>
+    <title>Jarvis Industrial Core - Robot Link</title>
     <style>
         * {
             box-sizing: border-box;
@@ -58,6 +58,17 @@
             font-weight: bold;
             text-shadow: 0 0 10px #00ffcc;
             font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .factory-status {
+            font-size: 10px;
+            background: rgba(255, 0, 100, 0.2);
+            border: 1px solid #ff3366;
+            color: #ff3366;
+            padding: 2px 6px;
+            border-radius: 4px;
         }
         .chat-box {
             flex: 1;
@@ -87,6 +98,28 @@
             border: 1px solid #ffffff;
             align-self: flex-end;
             color: #ffffff;
+        }
+        .robot-panel {
+            display: flex;
+            gap: 8px;
+            padding: 8px 15px;
+            background: rgba(0, 20, 40, 0.9);
+            border-top: 1px solid #005544;
+            overflow-x: auto;
+        }
+        .robot-btn {
+            background: rgba(0, 255, 204, 0.1);
+            border: 1px solid #00ffcc;
+            color: #00ffcc;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .robot-btn:active {
+            background: #00ffcc;
+            color: #05050a;
         }
         .input-area {
             display: flex;
@@ -129,7 +162,7 @@
 
     <div id="login-screen">
         <div class="login-container">
-            <h2>JARVIS LINK</h2>
+            <h2>JARVIS INDUSTRIAL</h2>
             <div class="input-group">
                 <label for="passcode">SECURITY PASSCODE:</label>
                 <input type="password" id="passcode" value="44104545" placeholder="Enter Code">
@@ -138,20 +171,33 @@
                 <label for="apiKey">GEMINI API KEY:</label>
                 <input type="password" id="apiKey" placeholder="วาง Google Gemini API Key ที่นี่">
             </div>
-            <button onclick="checkAccess()">CONNECT SYSTEM</button>
+            <button onclick="checkAccess()">CONNECT CORE</button>
             <div id="error" class="error-msg">ACCESS DENIED: ตรวจสอบรหัสผ่านหรือ API Key อีกครั้ง</div>
         </div>
     </div>
 
     <div id="chat-screen">
-        <header>JARVIS COMMAND CENTER v4.6 [LIVE]</header>
+        <header>
+            <span>JARVIS ROBOT LINK v1.0</span>
+            <span id="bridgeStatus" class="factory-status">BRIDGE DISCONNECTED</span>
+        </header>
+
         <div class="chat-box" id="chatBox">
             <div class="message jarvis-msg">
-                System Online. เชื่อมต่อโครงข่ายประสาทสำเร็จ! สวัสดีครับท่านประธาน พร้อมรับคำสั่งแล้วครับ!
+                System Online. เชื่อมต่อระบบโครงข่ายประสาทสำเร็จ! พร้อมรับคำสั่งควบคุมแขนกลและประมวลผลแล้วครับท่านประธาน!
             </div>
         </div>
+
+        <!-- แผงปุ่มลัดสั่งการแขนกลด่วน -->
+        <div class="robot-panel">
+            <button class="robot-btn" onclick="sendRobotCommand('HOME')">🏠 Home Position</button>
+            <button class="robot-btn" onclick="sendRobotCommand('PICK_LEFT')">👈 Pick Left</button>
+            <button class="robot-btn" onclick="sendRobotCommand('PLACE_RIGHT')">👉 Place Right</button>
+            <button class="robot-btn" onclick="sendRobotCommand('EMERGENCY_STOP')">🛑 E-STOP</button>
+        </div>
+
         <div class="input-area">
-            <input type="text" id="userInput" placeholder="พิมพ์ข้อความคุยกับผม..." onkeypress="handleKeyPress(event)">
+            <input type="text" id="userInput" placeholder="พิมพ์สั่งงานหรือคุยกับ Jarvis..." onkeypress="handleKeyPress(event)">
             <button onclick="sendMessage()">SEND</button>
         </div>
     </div>
@@ -170,6 +216,22 @@
             } else {
                 document.getElementById('error').style.display = 'block';
             }
+        }
+
+        // ฟังก์ชันส่งคำสั่งควบคุมแขนกลผ่าน Bridge (จำลองหรือต่อพอร์ตจริงผ่าน WebSocket)
+        function sendRobotCommand(action) {
+            const chatBox = document.getElementById('chatBox');
+            const jarvisMsgDiv = document.createElement('div');
+            jarvisMsgDiv.className = 'message jarvis-msg';
+            jarvisMsgDiv.textContent = `[คำสั่งแขนกล]: กำลังส่งสัญญาณคำสั่ง ${action} ไปยังตู้คอนโทรลเลอร์...`;
+            chatBox.appendChild(jarvisMsgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // จำลองการยิงคำสั่งไปหา Python Bridge Server (เช่น http://localhost:5000/robot)
+            setTimeout(() => {
+                jarvisMsgDiv.textContent = `[สำเร็จ]: แขนกลรับคำสั่ง ${action} เรียบร้อย ปฏิบัติการตามโปรแกรมเสร็จสิ้น! 🦾⚡️`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 1000);
         }
 
         async function sendMessage() {
@@ -194,13 +256,12 @@
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                // สลับมาใช้รุ่น gemini-pro พื้นฐาน
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${userApiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         contents: [{
-                            parts: [{ text: "คุณคือ Jarvis ผู้ช่วยอัจฉริยะส่วนตัวของท่านประธาน จงตอบสั้น กระชับ เป็นกันเอง และพร้อมช่วยเหลือทุกภารกิจ: " + text }]
+                            parts: [{ text: "คุณคือ Jarvis ผู้ช่วยอัจฉริยะควบคุมระบบอุตสาหกรรมของท่านประธาน จงตอบสั้น กระชับ เป็นกันเอง: " + text }]
                         }]
                     })
                 });
