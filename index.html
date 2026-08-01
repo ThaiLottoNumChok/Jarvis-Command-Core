@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>Jarvis AI-Native HTML Core (Advanced State Edition)</title>
+    <title>Jarvis AI-Native HTML Core (v2.5 Neural Log Edition)</title>
     <style>
         body { 
             background: #05050a; 
@@ -17,12 +17,12 @@
             border: 1px solid #00ffcc;
             border-radius: 8px;
             padding: 15px;
-            height: 250px;
+            height: 220px;
             overflow-y: auto;
             margin-bottom: 20px;
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
         }
-        .ai-message { margin-bottom: 10px; line-height: 1.5; }
+        .ai-message { margin-bottom: 8px; line-height: 1.4; }
         .user-input-box { display: flex; gap: 10px; }
         input[type="text"] {
             flex: 1; background: #000; border: 1px solid #00ffcc;
@@ -40,29 +40,29 @@
 <body>
 
     <div class="command-center">
-        <h1>🧠 JARVIS AI-NATIVE HTML CORE v2</h1>
-        <p>สถานะ: ฝังระบบจดจำสถานะ (State Memory) และวิวัฒนาการตัวเองภายในแท็ก</p>
+        <h1>🧠 JARVIS AI-NATIVE HTML CORE v2.5</h1>
+        <p>สถานะ: อัปเกรดแบล็กบ็อกซ์ความจำสะสม (Neural Memory Log) และวงจรชีวิตแท็ก</p>
         <hr style="border-color: #00ffcc; opacity: 0.3;"><br>
 
         <!-- 💬 หน้าต่างเทอร์มินัลสื่อสาร -->
         <div class="chat-terminal" id="terminal">
-            <div class="ai-message"><strong>[Jarvis AI]:</strong> ระบบสมองกลพร้อมสแตนด์บายครับท่านประธาน!</div>
+            <div class="ai-message"><strong>[Jarvis AI]:</strong> ระบบสมองกลพร้อมบันทึกประวัติคำสั่งแล้วครับท่านประธาน!</div>
         </div>
 
         <!-- ⌨️ ช่องป้อนคำสั่งอัจฉริยะ -->
         <div class="user-input-box">
-            <input type="text" id="aiInput" placeholder="พิมพ์คำสั่ง เช่น รีเซ็ต, วิเคราะห์..." onkeydown="if(event.key==='Enter') triggerAISbrain()">
+            <input type="text" id="aiInput" placeholder="พิมพ์คำสั่ง เช่น ขยับแขนซ้าย, วิเคราะห์, รีเซ็ต..." onkeydown="if(event.key==='Enter') triggerAISbrain()">
             <button onclick="triggerAISbrain()">SEND AI</button>
         </div>
 
         <br>
-        <!-- 🧩 Custom Tag ที่มี State Memory ประจำตัว (ไม่ต้องง้อ Script นอก) -->
+        <!-- 🧩 Custom Tag พร้อมระบบ Neural Memory Log ประจำตัว -->
         <div id="dynamicContainer">
-            <jarvis-neural-card state-status="Standby" state-memory="ศูนย์กลางข้อมูลพร้อม"></jarvis-neural-card>
+            <jarvis-neural-card state-status="Standby" neural-logs='["เริ่มต้นระบบแกนหลักสำเร็จ"]'></jarvis-neural-card>
         </div>
     </div>
 
-    <!-- 🧬 สมองกลและพันธุกรรม Web Components (รองรับ Reactive State) -->
+    <!-- 🧬 สมองกลและพันธุกรรม Web Components (v2.5 Advanced Lifecycle Hooks) -->
     <script>
         class JarvisNeuralCard extends HTMLElement {
             constructor() {
@@ -70,40 +70,68 @@
                 this.render();
             }
 
-            // สังเกตการณ์การเปลี่ยนแปลงของ Attribute (Reactive State Binding)
             static get observedAttributes() {
-                return ['state-status', 'state-memory'];
+                return ['state-status', 'neural-logs'];
             }
 
             attributeChangedCallback(name, oldValue, newValue) {
                 if (oldValue !== newValue) {
-                    this.render(); // อัปเดตโครงสร้างอัตโนมัติเมื่อ State เปลี่ยน
+                    this.render();
+                    // ⚡ Event-Driven Lifecycle Hook: กระตุ้นเมื่อสถานะเปลี่ยน
+                    if (name === 'state-status') {
+                        this.onAIContextReceived(newValue);
+                    }
                 }
+            }
+
+            //จำลองวงจรชีวิต (Event-Driven Hook) เมื่อแท็กรับบริบทใหม่
+            onAIContextReceived(status) {
+                console.log(`[Neural Hook]: แท็กรับทราบการเปลี่ยนสถานะเป็น -> [ ${status} ]`);
             }
 
             render() {
                 const status = this.getAttribute('state-status') || 'Standby';
-                const memory = this.getAttribute('state-memory') || 'ไม่มีข้อมูล';
+                let logs = [];
+                try {
+                    logs = JSON.parse(this.getAttribute('neural-logs') || '[]');
+                } catch(e) {
+                    logs = ['เกิดข้อผิดพลาดในการอ่านหน่วยความจำ'];
+                }
+
+                // แปลงประวัติ Log ทั้งหมดให้อยู่ในรูปรายการย่อย
+                const logHtml = logs.map(log => `<li style="font-size: 11px; color: #00b388; margin-bottom: 3px;">${log}</li>`).join('');
 
                 this.innerHTML = `
                     <div style="background: rgba(0,255,204,0.05); border: 1px dashed #00ffcc; padding: 15px; border-radius: 6px; margin-top: 15px;">
-                        <h3 style="margin: 0 0 10px 0; color: #ff007f;">⚡ [AI-Native Tag Core]</h3>
-                        <p style="margin: 0 0 5px 0; font-size: 14px;">สถานะสมองกล: <span style="color: #fff;">${status}</span></p>
-                        <p style="margin: 0; font-size: 12px; color: #00b388;">หน่วยความจำภายในแท็ก: [ ${memory} ]</p>
+                        <h3 style="margin: 0 0 10px 0; color: #ff007f;">⚡ [v2.5 Neural Blackbox Core]</h3>
+                        <p style="margin: 0 0 8px 0; font-size: 14px;">สถานะสมองกล: <span style="color: #fff;">${status}</span></p>
+                        <p style="margin: 0 0 5px 0; font-size: 12px; color: #ff007f;">ประวัติความจำสะสม (Neural Memory Logs):</p>
+                        <ul style="margin: 0; padding-left: 15px; max-height: 100px; overflow-y: auto;">
+                            ${logHtml}
+                        </ul>
                     </div>
                 `;
             }
 
-            // เมธอดอัปเดต State ภายในตัวเองโดยตรงตามแนวคิด Living Intelligence
-            setNeuralState(newStatus, newMemory) {
+            // เมธอดผนวกประวัติคำสั่งลงในแบล็กบ็อกซ์ (Append Log)
+            appendNeuralLog(newStatus, logMessage) {
+                let logs = [];
+                try {
+                    logs = JSON.parse(this.getAttribute('neural-logs') || '[]');
+                } catch(e) {}
+
+                logs.push(logMessage);
+                // จำกัดให้เก็บประวัติย้อนหลัง 5 รายการล่าสุดเพื่อความเป็นระเบียบ
+                if(logs.length > 5) logs.shift();
+
                 this.setAttribute('state-status', newStatus);
-                this.setAttribute('state-memory', newMemory);
+                this.setAttribute('neural-logs', JSON.stringify(logs));
             }
         }
 
         customElements.define('jarvis-neural-card', JarvisNeuralCard);
 
-        // ระบบสมองกลประมวลผลคำสั่ง
+        // ระบบสมองกลประมวลผลคำสั่งพร้อมบันทึกแบล็กบ็อกซ์
         function triggerAISbrain() {
             const input = document.getElementById('aiInput');
             const terminal = document.getElementById('terminal');
@@ -116,14 +144,19 @@
             terminal.scrollTop = terminal.scrollHeight;
 
             setTimeout(() => {
-                let aiResponse = `ประมวลผลคำสั่ง "${text}" เรียบร้อยครับ`;
+                let aiResponse = `บันทึกคำสั่ง "${text}" ลงแบล็กบ็อกซ์เรียบร้อยครับ`;
                 const neuralCard = document.querySelector('jarvis-neural-card');
                 
                 if(text.includes("รีเซ็ต") || text.includes("reset")) {
-                    aiResponse = "🔄 รีเซ็ตระบบสมองกลและล้างค่าหน่วยความจำสำเร็จ!";
-                    if(neuralCard) neuralCard.setNeuralState("Standby", "ล้างความจำเริ่มต้นเรียบร้อย");
+                    aiResponse = "🔄 รีเซ็ตระบบและล้างประวัติหน่วยความจำสำเร็จ!";
+                    if(neuralCard) {
+                        neuralCard.setAttribute('state-status', 'Standby');
+                        neuralCard.setAttribute('neural-logs', JSON.stringify(["รีเซ็ตระบบสมองกลเริ่มต้นใหม่"]));
+                    }
                 } else {
-                    if(neuralCard) neuralCard.setNeuralState("กำลังประมวลผล", `รับค่าคำสั่ง: ${text}`);
+                    if(neuralCard) {
+                        neuralCard.appendNeuralLog("กำลังประมวลผลคำสั่ง", `ประมวลผล: ${text}`);
+                    }
                 }
 
                 terminal.innerHTML += `<div class="ai-message" style="color: #ff007f;"><strong>[Jarvis AI]:</strong> ${aiResponse}</div>`;
