@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>Jarvis AI-Native HTML Core (Ultimate Unified Hardware & Voice Edition)</title>
+    <title>Jarvis AI-Native HTML Core (Gemini API Connected Edition)</title>
     <style>
         body { 
             background: #05050a; 
@@ -24,7 +24,7 @@
         }
         .ai-message { margin-bottom: 10px; line-height: 1.4; }
         .control-panel { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-        input[type="text"] {
+        input[type="text"], input[type="password"] {
             flex: 1; background: #000; border: 1px solid #00ffcc;
             color: #00ffcc; padding: 12px; border-radius: 4px;
             font-family: monospace; outline: none; min-width: 200px;
@@ -44,9 +44,14 @@
 <body>
 
     <div class="command-center">
-        <h1>🧠 JARVIS AI-NATIVE HTML CORE (ULTIMATE UNIFIED)</h1>
-        <p>สถานะ: HTML ครองโลก หลอมรวมฮาร์ดแวร์ USB, เสียงพูด และสมองกลไว้ในไฟล์เดียว</p>
+        <h1>🧠 JARVIS GEMINI AI-NATIVE CORE</h1>
+        <p>สถานะ: HTML ครองโลก เชื่อมต่อ Gemini API ตัวจริง พร้อมฮาร์ดแวร์และเสียงพูด</p>
         <hr style="border-color: #00ffcc; opacity: 0.3;"><br>
+
+        <!-- 🔑 แผงตั้งค่า Gemini API Key -->
+        <div class="control-panel">
+            <input type="password" id="apiKey" placeholder="วาง Gemini API Key ที่นี่..." value="">
+        </div>
 
         <!-- 🔌 แผงควบคุมฮาร์ดแวร์และเสียงพูด -->
         <div class="control-panel">
@@ -59,34 +64,34 @@
 
         <!-- 💬 หน้าต่างเทอร์มินัลสื่อสาร -->
         <div class="chat-terminal" id="terminal">
-            <div class="ai-message"><strong>[Jarvis AI]:</strong> HTML สมองกลรวมศูนย์พร้อมควบคุมฮาร์ดแวร์และโต้ตอบด้วยเสียงแล้วครับท่านประธาน!</div>
+            <div class="ai-message"><strong>[Jarvis AI]:</strong> สมองกล Gemini พร้อมรับบัญชาการแล้วครับท่านประธาน! กรอก API Key แล้วเริ่มสนทนาได้เลย</div>
         </div>
 
         <!-- ⌨️ ช่องป้อนคำสั่งอัจฉริยะ -->
         <div class="control-panel">
-            <input type="text" id="aiInput" placeholder="พิมพ์หรือพูดคำสั่ง เช่น หมุนซ้าย, หมุนขวา, สวัสดี..." onkeydown="if(event.key==='Enter') triggerAISbrain()">
+            <input type="text" id="aiInput" placeholder="พิมพ์หรือพูดคุยกับ Jarvis..." onkeydown="if(event.key==='Enter') triggerAISbrain()">
             <button onclick="triggerAISbrain()">SEND AI</button>
         </div>
 
         <br>
         <!-- 🧩 Custom Tag แบล็กบ็อกซ์หน่วยความจำ -->
         <div id="dynamicContainer">
-            <jarvis-neural-card state-status="Active" neural-logs='["เริ่มต้นระบบแกนหลัก HTML Unified สำเร็จ"]'></jarvis-neural-card>
+            <jarvis-neural-card state-status="Active" neural-logs='["เริ่มต้นระบบแกนหลัก Gemini HTML สำเร็จ"]'></jarvis-neural-card>
         </div>
     </div>
 
-    <!-- 🧬 สมองกลรวมศูนย์ (Web Components + Web Serial + Web Speech APIs) -->
+    <!-- 🧬 สมองกลรวมศูนย์ (Gemini API + Web Serial + Web Speech APIs) -->
     <script>
         let globalPort = null;
         let globalWriter = null;
 
-        // 🔌 1. ระบบเชื่อมต่อฮาร์ดแวร์พอร์ต USB ตรงจากเบราว์เซอร์
+        // 🔌 ระบบเชื่อมต่อฮาร์ดแวร์พอร์ต USB
         async function toggleNativeSerial() {
             const statusEl = document.getElementById('hardwareStatus');
             const terminal = document.getElementById('terminal');
 
             if (!('serial' in navigator)) {
-                alert("เบราว์เซอร์นี้ไม่รองรับ Web Serial API (โปรดใช้ Chrome หรือ Edge)");
+                alert("เบราว์เซอร์นี้ไม่รองรับ Web Serial API");
                 return;
             }
 
@@ -122,14 +127,13 @@
             if (globalWriter) {
                 try {
                     await globalWriter.write(cmd + "\n");
-                    console.log(`[Native Serial Send]: ${cmd}`);
                 } catch (e) {
                     console.error("ส่งข้อมูลฮาร์ดแวร์ผิดพลาด:", e);
                 }
             }
         }
 
-        // 🔊 2. ระบบสังเคราะห์เสียงพูด (Text-to-Speech)
+        // 🔊 ระบบสังเคราะห์เสียงพูด (Text-to-Speech)
         function speakText(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -141,7 +145,7 @@
             }
         }
 
-        // 🎙️ 3. ระบบฟังเสียงพูดสั่งการ (Speech-to-Text)
+        // 🎙️ ระบบฟังเสียงพูด (Speech-to-Text)
         let recognition = null;
         let isListening = false;
 
@@ -190,7 +194,7 @@
             micStatus.style.color = "#007fff";
         }
 
-        // 🧩 4. Custom Component แบล็กบ็อกซ์หน่วยความจำ
+        // 🧩 Custom Component แบล็กบ็อกซ์หน่วยความจำ
         class JarvisNeuralCard extends HTMLElement {
             constructor() {
                 super();
@@ -218,7 +222,7 @@
 
                 this.innerHTML = `
                     <div style="background: rgba(0,255,204,0.05); border: 1px dashed #00ffcc; padding: 15px; border-radius: 6px; margin-top: 15px;">
-                        <h3 style="margin: 0 0 10px 0; color: #ff007f;">⚡ [HTML Unified Core Memory]</h3>
+                        <h3 style="margin: 0 0 10px 0; color: #ff007f;">⚡ [Gemini Core Memory]</h3>
                         <p style="margin: 0 0 8px 0; font-size: 14px;">สถานะระบบ: <span style="color: #fff;">${status}</span></p>
                         <p style="margin: 0 0 5px 0; font-size: 12px; color: #ff007f;">บันทึกแบล็กบ็อกซ์ (Neural Logs):</p>
                         <ul style="margin: 0; padding-left: 15px; max-height: 90px; overflow-y: auto;">
@@ -244,10 +248,11 @@
 
         customElements.define('jarvis-neural-card', JarvisNeuralCard);
 
-        // 🚀 5. ระบบสมองกลรวมศูนย์ประมวลผลคำสั่ง (ฮาร์ดแวร์ + ข้อความ + เสียงพูด)
+        // 🚀 ระบบสมองกลเชื่อมต่อ Gemini API จริง ควบคู่ฮาร์ดแวร์และเสียงพูด
         async function triggerAISbrain() {
             const input = document.getElementById('aiInput');
             const terminal = document.getElementById('terminal');
+            const apiKeyInput = document.getElementById('apiKey');
             const text = input.value.trim();
             
             if(!text) return;
@@ -256,45 +261,66 @@
             input.value = '';
             terminal.scrollTop = terminal.scrollHeight;
 
+            // 1. ตรวจสอบคำสั่งฮาร์ดแวร์ควบคู่
             let hwCommand = "";
-            let aiReply = `บันทึกคำสั่ง "${text}" ลงแบล็กบ็อกซ์เรียบร้อยครับ`;
-
             if(text.includes("หมุนซ้าย") || text.includes("left")) {
                 hwCommand = "L";
-                aiReply = "ส่งรหัส L หมุนซ้ายสู่อุปกรณ์ฮาร์ดแวร์สำเร็จ";
                 await sendCommandToHardware(hwCommand);
             } else if(text.includes("หมุนขวา") || text.includes("right")) {
                 hwCommand = "R";
-                aiReply = "ส่งรหัส R หมุนขวาสู่อุปกรณ์ฮาร์ดแวร์สำเร็จ";
                 await sendCommandToHardware(hwCommand);
             } else if(text.includes("รีเซ็ต") || text.includes("reset")) {
                 hwCommand = "X";
-                aiReply = "รีเซ็ตระบบสมองกลและส่งสัญญาณ X เรียบร้อย";
                 await sendCommandToHardware(hwCommand);
-                const neuralCard = document.querySelector('jarvis-neural-card');
-                if(neuralCard) {
-                    neuralCard.setAttribute('state-status', 'Standby');
-                    neuralCard.setAttribute('neural-logs', JSON.stringify(["รีเซ็ตระบบแกนหลัก HTML สำเร็จ"]));
-                }
-            } else if(text.includes("สวัสดี") || text.includes("hello")) {
-                aiReply = "สวัสดีครับท่านประธาน HTML Unified Core พร้อมรับบัญชาการ";
-            } else if(text.includes("สถานะ")) {
-                aiReply = "ระบบแกนหลัก HTML และฮาร์ดแวร์ทำงานเต็มพิกัดครับ";
             }
 
-            setTimeout(() => {
-                terminal.innerHTML += `<div class="ai-message" style="color: #ff007f;"><strong>[Jarvis AI]:</strong> ${aiReply}</div>`;
-                terminal.scrollTop = terminal.scrollHeight;
+            const geminiKey = apiKeyInput.value.trim();
+            if (!geminiKey) {
+                const errReply = "กรุณากรอก Gemini API Key ที่ช่องด้านบนก่อนใช้งานสมองกลครับท่านประธาน";
+                terminal.innerHTML += `<div class="ai-message" style="color: #ff007f;"><strong>[Jarvis AI]:</strong> ${errReply}</div>`;
+                speakText(errReply);
+                return;
+            }
 
-                // สั่งเปล่งเสียงพูดออกมาจากลำโพง
-                speakText(aiReply);
+            // 2. ยิงตรงสู่ Gemini API (gemini-1.5-flash)
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
 
-                // บันทึก Log ลง Custom Tag
-                const neuralCard = document.querySelector('jarvis-neural-card');
-                if(neuralCard && !text.includes("รีเซ็ต")) {
-                    neuralCard.appendNeuralLog("ประมวลผลสมบูรณ์", `คำสั่ง: ${text} [HW: ${hwCommand || 'None'}]`);
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: "คุณคือ Jarvis ผู้ช่วยอัจฉริยะของท่านประธาน ตอบคำถามสั้นกระชับและเป็นกันเอง: " + text }]
+                        }]
+                    })
+                });
+
+                const resData = await response.json();
+                
+                if (resData.candidates && resData.candidates.length > 0) {
+                    let aiReply = resData.candidates[0].content.parts[0].text;
+
+                    terminal.innerHTML += `<div class="ai-message" style="color: #ff007f;"><strong>[Jarvis AI]:</strong> ${aiReply}</div>`;
+                    terminal.scrollTop = terminal.scrollHeight;
+
+                    // สั่งเปล่งเสียงพูด
+                    speakText(aiReply);
+
+                    // บันทึก Log ลง Custom Tag
+                    const neuralCard = document.querySelector('jarvis-neural-card');
+                    if(neuralCard) {
+                        neuralCard.appendNeuralLog("Gemini Online", `คำสั่ง: ${text} [HW: ${hwCommand || 'None'}]`);
+                    }
+                } else {
+                    throw new Error("โครงสร้างข้อมูล API ไม่ถูกต้อง");
                 }
-            }, 300);
+            } catch (error) {
+                console.error(error);
+                const errReply = "เกิดข้อผิดพลาดในการเชื่อมต่อ Gemini API โปรดตรวจสอบคีย์อีกครั้ง";
+                terminal.innerHTML += `<div class="ai-message" style="color: #ff3366;"><strong>[Error]:</strong> ${errReply}</div>`;
+                speakText(errReply);
+            }
         }
     </script>
 </body>
