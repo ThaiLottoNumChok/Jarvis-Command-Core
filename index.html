@@ -2,480 +2,144 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jarvis STEM Robot Arm Control Center</title>
+    <title>Jarvis AI-Native HTML Core</title>
     <style>
-        * {
-            box-sizing: border-box;
+        body { 
+            background: #05050a; 
+            color: #00ffcc; 
+            font-family: 'Courier New', monospace; 
+            padding: 25px; 
             margin: 0;
-            padding: 0;
-            font-family: 'Courier New', Courier, monospace;
         }
-        body {
-            background-color: #05050a;
-            color: #00ffcc;
-            height: 100vh;
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+        .command-center {
+            max-width: 800px;
+            margin: auto;
         }
-        #login-screen {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            width: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background-color: #05050a;
-            z-index: 10;
-            overflow-y: auto;
-            padding: 20px;
-        }
-        .login-container {
-            background: rgba(10, 15, 30, 0.9);
-            border: 2px solid #00ffcc;
-            box-shadow: 0 0 25px rgba(0, 255, 204, 0.4);
-            padding: 25px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
-        #chat-screen {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-        }
-        header {
-            background: rgba(10, 15, 30, 0.95);
-            border-bottom: 1px solid #00ffcc;
-            padding: 12px;
-            text-align: center;
-            letter-spacing: 2px;
-            font-weight: bold;
-            text-shadow: 0 0 10px #00ffcc;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .factory-status {
-            font-size: 10px;
-            background: rgba(0, 255, 204, 0.2);
+        .chat-terminal {
+            background: rgba(0, 10, 20, 0.9);
             border: 1px solid #00ffcc;
-            color: #00ffcc;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-        .chat-box {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .message {
-            max-width: 85%;
-            padding: 12px 15px;
             border-radius: 8px;
-            font-size: 14px;
-            line-height: 1.4;
-            word-break: break-word;
-            white-space: pre-wrap;
+            padding: 15px;
+            height: 250px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
         }
-        .jarvis-msg {
-            background: rgba(0, 255, 204, 0.1);
-            border: 1px solid #00ffcc;
-            align-self: flex-start;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+        .ai-message {
+            margin-bottom: 10px;
+            line-height: 1.5;
         }
-        .user-msg {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid #ffffff;
-            align-self: flex-end;
-            color: #ffffff;
-        }
-        .generated-image {
-            max-width: 100%;
-            border-radius: 6px;
-            border: 1px solid #00ffcc;
-            margin-top: 8px;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
-        }
-        /* แผงควบคุมแขนกลและสไลเดอร์ */
-        .robot-control-panel {
-            background: rgba(0, 20, 40, 0.95);
-            border-top: 1px solid #00ffcc;
-            padding: 12px 15px;
+        .user-input-box {
             display: flex;
-            flex-direction: column;
             gap: 10px;
         }
-        .robot-btn-group {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            align-items: center;
-        }
-        .robot-btn {
-            background: rgba(0, 255, 204, 0.1);
-            border: 1px solid #00ffcc;
-            color: #00ffcc;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        .robot-btn:active {
-            background: #00ffcc;
-            color: #05050a;
-        }
-        .mic-btn {
-            background: rgba(255, 0, 100, 0.2);
-            border: 1px solid #ff3366;
-            color: #ff3366;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-            white-space: nowrap;
-            font-weight: bold;
-        }
-        .mic-btn.listening {
-            background: #ff3366;
-            color: #fff;
-            box-shadow: 0 0 10px #ff3366;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-        .slider-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            font-size: 11px;
-        }
-        .slider-box {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid #005544;
-            padding: 6px 10px;
-            border-radius: 4px;
-        }
-        .slider-box label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 4px;
-            color: #88ffcc;
-        }
-        .slider-box input[type=range] {
-            width: 100%;
-            accent-color: #00ffcc;
-        }
-        .input-area {
-            display: flex;
-            padding: 10px 15px;
-            background: rgba(10, 15, 30, 0.98);
-            border-top: 1px solid #00ffcc;
-            width: 100%;
-        }
-        .input-area input {
+        input[type="text"] {
             flex: 1;
-            padding: 10px 12px;
             background: #000;
             border: 1px solid #00ffcc;
             color: #00ffcc;
-            border-radius: 6px;
+            padding: 12px;
+            border-radius: 4px;
+            font-family: monospace;
             outline: none;
-            font-size: 16px;
         }
-        .input-area button {
-            margin-left: 10px;
-            padding: 0 18px;
-            background: #00ffcc;
-            border: none;
-            color: #05050a;
-            font-weight: bold;
-            border-radius: 6px;
+        button {
+            background: rgba(0, 255, 204, 0.2);
+            border: 1px solid #00ffcc;
+            color: #00ffcc;
+            padding: 12px 25px;
+            border-radius: 4px;
             cursor: pointer;
-            letter-spacing: 1px;
-            font-size: 14px;
+            font-weight: bold;
+            transition: 0.3s;
         }
-        h2 { margin-bottom: 15px; letter-spacing: 2px; text-shadow: 0 0 10px #00ffcc; font-size: 18px; }
-        .input-group { margin-bottom: 12px; text-align: left; }
-        label { display: block; margin-bottom: 4px; font-size: 12px; color: #88ffcc; }
-        .login-container input { width: 100%; padding: 8px 10px; background: #000; border: 1px solid #00ffcc; color: #00ffcc; border-radius: 6px; font-size: 13px; outline: none; }
-        .login-container button { width: 100%; padding: 12px; background: #00ffcc; border: none; color: #05050a; font-weight: bold; font-size: 16px; border-radius: 6px; cursor: pointer; letter-spacing: 1px; margin-top: 10px; }
-        .error-msg { margin-top: 10px; color: #ff3366; font-size: 13px; display: none; text-shadow: 0 0 5px #ff3366; }
+        button:hover {
+            background: #00ffcc;
+            color: #000;
+        }
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="login-container">
-            <h2>JARVIS STEM CORE</h2>
-            <div class="input-group">
-                <label for="passcode">SECURITY PASSCODE:</label>
-                <input type="password" id="passcode" value="44104545" placeholder="Enter Code">
-            </div>
-            <div class="input-group">
-                <label for="apiKey">GEMINI API KEY (Chat):</label>
-                <input type="password" id="apiKey" placeholder="วาง Google Gemini API Key">
-            </div>
-            <div class="input-group">
-                <label for="imageApiKey">IMAGE API KEY (OpenAI / DALL-E):</label>
-                <input type="password" id="imageApiKey" placeholder="วาง OpenAI API Key (สำหรับสร้างรูป)">
-            </div>
-            <button onclick="checkAccess()">CONNECT CORE</button>
-            <div id="error" class="error-msg">ACCESS DENIED: ตรวจสอบข้อมูลการเชื่อมต่ออีกครั้ง</div>
+    <div class="command-center">
+        <h1>🧠 JARVIS AI-NATIVE HTML CORE</h1>
+        <p>สถานะ: ผสานรากฐาน HTML เข้ากับโครงข่ายสมองกลอัจฉริยะอย่างไร้รอยต่อ</p>
+        <hr style="border-color: #00ffcc; opacity: 0.3;"><br>
+
+        <!-- 💬 หน้าต่างเทอร์มินัลสื่อสารกับสมองกล Jarvis -->
+        <div class="chat-terminal" id="terminal">
+            <div class="ai-message"><strong>[Jarvis AI]:</strong> ระบบสมองกลพร้อมเชื่อมต่อครับท่านประธาน พิมพ์สั่งการหรือปรึกษาโครงสร้างโค้ดได้เลย!</div>
+        </div>
+
+        <!-- ⌨️ ช่องป้อนคำสั่งอัจฉริยะ -->
+        <div class="user-input-box">
+            <input type="text" id="aiInput" placeholder="พิมพ์คำสั่งหรือถามสมองกล Jarvis ที่นี่..." onkeydown="if(event.key==='Enter') triggerAISbrain()">
+            <button onclick="triggerAISbrain()">SEND AI</button>
+        </div>
+
+        <br>
+        <!-- 🧩 พื้นที่แสดงผล Custom Tags ที่สมองกลสร้างหรือควบคุม -->
+        <div id="dynamicContainer">
+            <jarvis-neural-card title="ระบบวิเคราะห์โค้ด" status="กำลังทำงานปกติ"></jarvis-neural-card>
         </div>
     </div>
 
-    <div id="chat-screen">
-        <header>
-            <span>JARVIS ROBOT ARM LINK</span>
-            <span id="bridgeStatus" class="factory-status">ONLINE + VISION AI</span>
-        </header>
-
-        <div class="chat-box" id="chatBox">
-            <div class="message jarvis-msg">
-                System Online. พร้อมรับคำสั่งเสียง สไลเดอร์ แชทสนทนา และฟีเจอร์ใหม่ **AI เสกรูปภาพ** แล้วครับท่านประธาน! (พิมพ์สั่ง เช่น "สร้างภาพ...")
-            </div>
-        </div>
-
-        <!-- แผงควบคุมแขนกลขั้นเทพ: ปุ่มลัด + สั่งด้วยเสียง + สไลเดอร์ปรับองศาละเอียด -->
-        <div class="robot-control-panel">
-            <div class="robot-btn-group">
-                <button class="mic-btn" id="micBtn" onclick="toggleSpeechRecognition()">🎙️ สั่งด้วยเสียง</button>
-                <button class="robot-btn" onclick="sendRobotCommand('HOME', 90)">🏠 Home</button>
-                <button class="robot-btn" onclick="sendRobotCommand('PICK', 45)">👈 Pick</button>
-                <button class="robot-btn" onclick="sendRobotCommand('PLACE', 135)">👉 Place</button>
-                <button class="robot-btn" onclick="sendRobotCommand('STOP', 90)">🛑 E-STOP</button>
-            </div>
-            <div class="slider-container">
-                <div class="slider-box">
-                    <label><span>ฐาน (Base):</span> <span id="valBase">90°</span></label>
-                    <input type="range" id="rangeBase" min="0" max="180" value="90" oninput="updateSlider('Base', this.value)">
-                </div>
-                <div class="slider-box">
-                    <label><span>ข้อต่อ 1 (Arm 1):</span> <span id="valArm1">90°</span></label>
-                    <input type="range" id="rangeArm1" min="0" max="180" value="90" oninput="updateSlider('Arm1', this.value)">
-                </div>
-                <div class="slider-box">
-                    <label><span>ข้อต่อ 2 (Arm 2):</span> <span id="valArm2">90°</span></label>
-                    <input type="range" id="rangeArm2" min="0" max="180" value="90" oninput="updateSlider('Arm2', this.value)">
-                </div>
-                <div class="slider-box">
-                    <label><span>ที่หนีบ (Claw):</span> <span id="valClaw">90°</span></label>
-                    <input type="range" id="rangeClaw" min="0" max="180" value="90" oninput="updateSlider('Claw', this.value)">
-                </div>
-            </div>
-        </div>
-
-        <div class="input-area">
-            <input type="text" id="userInput" placeholder="พิมพ์คุย สั่งงาน หรือพิมพ์ 'สร้างภาพ...'..." onkeypress="handleKeyPress(event)">
-            <button onclick="sendMessage()">SEND</button>
-        </div>
-    </div>
-
+    <!-- 🧬 สมองกลและพันธุกรรม Web Components -->
     <script>
-        let userApiKey = "";
-        let userImageApiKey = "";
-        let recognition = null;
-        let isListening = false;
+        // 1. สร้าง Custom Element แบบ AI-Driven (แท็กอัจฉริยะปรับเปลี่ยนตัวเองได้)
+        class JarvisNeuralCard extends HTMLElement {
+            constructor() {
+                super();
+                const title = this.getAttribute('title') || 'Neural Core';
+                const status = this.getAttribute('status') || 'Standby';
 
-        function checkAccess() {
-            const code = document.getElementById('passcode').value;
-            const key = document.getElementById('apiKey').value.trim();
-            const imgKey = document.getElementById('imageApiKey').value.trim();
+                this.innerHTML = `
+                    <div style="background: rgba(0,255,204,0.05); border: 1px dashed #00ffcc; padding: 15px; border-radius: 6px; margin-top: 15px;">
+                        <h3 style="margin: 0 0 10px 0; color: #ff007f;">⚡ [Custom Tag]: ${title}</h3>
+                        <p style="margin: 0; font-size: 14px;">สถานะสมองกล: <span id="neuralStatus" style="color: #fff;">${status}</span></p>
+                    </div>
+                `;
+            }
+
+            // เมธอดให้สมองกลสั่งอัปเดตสถานะในแท็กได้โดยตรง
+            updateNeuralStatus(newStatus) {
+                this.querySelector('#neuralStatus').innerText = newStatus;
+            }
+        }
+
+        // ลงทะเบียนแท็กใหม่เข้าสู่ระบบเบราว์เซอร์
+        customElements.define('jarvis-neural-card', JarvisNeuralCard);
+
+        // 2. จำลองระบบสมองกลประมวลผล (เตรียมเชื่อมต่อ Gemini API เต็มรูปแบบ)
+        function triggerAISbrain() {
+            const input = document.getElementById('aiInput');
+            const terminal = document.getElementById('terminal');
+            const text = input.value.trim();
             
-            if (code === '44104545' && key.length > 10) {
-                userApiKey = key;
-                userImageApiKey = imgKey; // อาจจะเว้นว่างไว้ก่อนได้ถ้ายังไม่ใช้สร้างภาพจริง
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('chat-screen').style.display = 'flex';
-                initSpeechRecognition();
-            } else {
-                document.getElementById('error').style.display = 'block';
-            }
-        }
+            if(!text) return;
 
-        // ระบบเสียง Speech Recognition
-        function initSpeechRecognition() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) return;
+            // แสดงข้อความฝั่งผู้ใช้
+            terminal.innerHTML += `<div class="ai-message" style="color: #00ffcc;"><strong>[ท่านประธาน]:</strong> ${text}</div>`;
+            input.value = '';
+            terminal.scrollTop = terminal.scrollHeight;
 
-            recognition = new SpeechRecognition();
-            recognition.lang = 'th-TH';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            recognition.onresult = function(event) {
-                const speechText = event.results[0][0].transcript;
-                document.getElementById('userInput').value = speechText;
-                stopListeningEffect();
-                sendMessage();
-            };
-
-            recognition.onerror = () => stopListeningEffect();
-            recognition.onend = () => stopListeningEffect();
-        }
-
-        function toggleSpeechRecognition() {
-            if (!recognition) {
-                alert("เบราว์เซอร์นี้ไม่รองรับการสั่งงานด้วยเสียงครับ");
-                return;
-            }
-            if (isListening) {
-                recognition.stop();
-                stopListeningEffect();
-            } else {
-                recognition.start();
-                startListeningEffect();
-            }
-        }
-
-        function startListeningEffect() {
-            isListening = true;
-            const micBtn = document.getElementById('micBtn');
-            micBtn.classList.add('listening');
-            micBtn.textContent = "🔴 กำลังฟัง...";
-        }
-
-        function stopListeningEffect() {
-            isListening = false;
-            const micBtn = document.getElementById('micBtn');
-            micBtn.classList.remove('listening');
-            micBtn.textContent = "🎙️ สั่งด้วยเสียง";
-        }
-
-        // ฟังก์ชันส่งคำสั่งปุ่มลัดแขนกล
-        function sendRobotCommand(action, value) {
-            const chatBox = document.getElementById('chatBox');
-            const msg = document.createElement('div');
-            msg.className = 'message jarvis-msg';
-            msg.textContent = `[คำสั่งแขนกล]: ส่งคำสั่ง ${action} (${value}°) ไปยังระบบควบคุมแล้วครับ! 🦾`;
-            chatBox.appendChild(msg);
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            fetch('http://localhost:5000/api/command', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: action, value: value })
-            }).catch(err => console.log("Bridge server offline (Simulation mode)"));
-        }
-
-        // ฟังก์ชันควบคุมผ่านสไลเดอร์
-        function updateSlider(axis, val) {
-            document.getElementById('val' + axis).textContent = val + '°';
-            
-            fetch('http://localhost:5000/api/command', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ axis: axis, angle: parseInt(val) })
-            }).catch(err => console.log("Slider simulation mode"));
-        }
-
-        async function sendMessage() {
-            const inputField = document.getElementById('userInput');
-            const text = inputField.value.trim();
-            if (!text) return;
-
-            const chatBox = document.getElementById('chatBox');
-            const userMsgDiv = document.createElement('div');
-            userMsgDiv.className = 'message user-msg';
-            userMsgDiv.textContent = text;
-            chatBox.appendChild(userMsgDiv);
-
-            inputField.value = '';
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            const jarvisMsgDiv = document.createElement('div');
-            jarvisMsgDiv.className = 'message jarvis-msg';
-            jarvisMsgDiv.textContent = "กำลังประมวลผลคำสั่ง...";
-            chatBox.appendChild(jarvisMsgDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            // ตรวจสอบว่าเป็นคำสั่งสร้างภาพหรือไม่ (เช่น ขึ้นต้นด้วยคำว่า "สร้างภาพ", "ขอรูป", "draw", "image")
-            if (text.toLowerCase().startsWith('สร้างภาพ') || text.toLowerCase().startsWith('ขอรูป') || text.toLowerCase().startsWith('draw')) {
-                if (!userImageApiKey) {
-                    jarvisMsgDiv.textContent = "⚠️ แจ้งเตือน: ท่านยังไม่ได้ใส่ OpenAI Image API Key ที่หน้าแรก จึงยังไม่สามารถสร้างรูปภาพได้ครับ";
-                    return;
-                }
+            // จำลองการคิดวิเคราะห์ของสมองกล Jarvis
+            setTimeout(() => {
+                let aiResponse = `รับทราบครับ กำลังประมวลผลคำสั่ง "${text}" ผ่านโครงข่ายสมองกล HTML Core`;
                 
-                jarvisMsgDiv.textContent = "🎨 กำลังเนรมิตภาพตามจินตนาการ รอสักครู่ครับท่านประธาน...";
-                
-                try {
-                    const imgPrompt = text.replace(/^(สร้างภาพ|ขอรูป|draw\s*)/i, '').trim();
-                    const imgResponse = await fetch('https://api.openai.com/v1/images/generations', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${userImageApiKey}`
-                        },
-                        body: JSON.stringify({
-                            model: "dall-e-3",
-                            prompt: imgPrompt,
-                            n: 1,
-                            size: "1024x1024"
-                        })
-                    });
-
-                    const imgData = await imgResponse.json();
-                    if (imgData.data && imgData.data[0].url) {
-                        jarvisMsgDiv.innerHTML = `🎨 ภาพผลงานสำหรับ: "${imgPrompt}"<br><img src="${imgData.data[0].url}" class="generated-image" alt="Generated Art">`;
-                    } else if (imgData.error) {
-                        jarvisMsgDiv.textContent = "Image API Error: " + imgData.error.message;
-                    } else {
-                        jarvisMsgDiv.textContent = "ไม่สามารถสร้างรูปภาพได้ในขณะนี้";
-                    }
-                } catch (err) {
-                    jarvisMsgDiv.textContent = "เชื่อมต่อระบบสร้างภาพล้มเหลว: " + err.message;
-                }
-                chatBox.scrollTop = chatBox.scrollHeight;
-                return;
-            }
-
-            // ถ้าไม่ใช่คำสั่งสร้างภาพ ให้คุยกับ Gemini ปกติ
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${userApiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{ text: "คุณคือ Jarvis ผู้ช่วยอัจฉริยะส่วนตัวของท่านประธาน เชี่ยวชาญเรื่องแขนกลเลโก้และหุ่นยนต์ STEM ตอบสั้น กระชับ เป็นกันเอง: " + text }]
-                        }]
-                    })
-                });
-
-                const data = await response.json();
-                if (data.candidates && data.candidates[0].content.parts[0].text) {
-                    jarvisMsgDiv.textContent = data.candidates[0].content.parts[0].text;
-                } else if (data.error) {
-                    jarvisMsgDiv.textContent = "API Error: " + data.error.message;
+                // ตัวอย่างการให้สมองกลสั่งอัปเดต Custom Tag อัตโนมัติ
+                const neuralCard = document.querySelector('jarvis-neural-card');
+                if(text.includes("รีเซ็ต") || text.includes("reset")) {
+                    aiResponse = "รีเซ็ตระบบสมองกลและโครงสร้างแท็กเรียบร้อยครับ!";
+                    neuralCard.updateNeuralStatus("รีเซ็ตค่าเริ่มต้นแล้ว");
                 } else {
-                    jarvisMsgDiv.textContent = "เกิดข้อผิดพลาดในการตอบสนองจากระบบ";
+                    neuralCard.updateNeuralStatus(`กำลังประมวลผล: ${text}`);
                 }
-            } catch (error) {
-                jarvisMsgDiv.textContent = "เชื่อมต่อล้มเหลว: ตรวจสอบอินเทอร์เน็ตหรือ API Key ครับ";
-            }
 
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        function handleKeyPress(e) {
-            if (e.key === 'Enter') sendMessage();
+                terminal.innerHTML += `<div class="ai-message" style="color: #ff007f;"><strong>[Jarvis AI]:</strong> ${aiResponse}</div>`;
+                terminal.scrollTop = terminal.scrollHeight;
+            }, 600);
         }
     </script>
-
 </body>
 </html>
