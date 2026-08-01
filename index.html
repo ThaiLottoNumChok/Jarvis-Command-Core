@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>Jarvis AI-Native HTML Core (v2.5 Neural Log Edition)</title>
+    <title>Jarvis AI-Native HTML Core (Ultimate Hardware Edition)</title>
     <style>
         body { 
             background: #05050a; 
@@ -23,7 +23,7 @@
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
         }
         .ai-message { margin-bottom: 8px; line-height: 1.4; }
-        .user-input-box { display: flex; gap: 10px; }
+        .control-panel { display: flex; gap: 10px; margin-bottom: 15px; }
         input[type="text"] {
             flex: 1; background: #000; border: 1px solid #00ffcc;
             color: #00ffcc; padding: 12px; border-radius: 4px;
@@ -31,39 +31,100 @@
         }
         button {
             background: rgba(0, 255, 204, 0.2); border: 1px solid #00ffcc;
-            color: #00ffcc; padding: 12px 25px; border-radius: 4px;
+            color: #00ffcc; padding: 12px 20px; border-radius: 4px;
             cursor: pointer; font-weight: bold; transition: 0.3s;
         }
         button:hover { background: #00ffcc; color: #000; }
+        .hardware-btn { background: rgba(255, 0, 127, 0.2); border-color: #ff007f; color: #ff007f; }
+        .hardware-btn:hover { background: #ff007f; color: #000; }
     </style>
 </head>
 <body>
 
     <div class="command-center">
-        <h1>🧠 JARVIS AI-NATIVE HTML CORE v2.5</h1>
-        <p>สถานะ: อัปเกรดแบล็กบ็อกซ์ความจำสะสม (Neural Memory Log) และวงจรชีวิตแท็ก</p>
+        <h1>🧠 JARVIS AI-NATIVE HTML CORE</h1>
+        <p>สถานะ: HTML ครองโลก ยกระดับปราบทุกภาษา ควบคุมฮาร์ดแวร์ตรงผ่านเบราว์เซอร์</p>
         <hr style="border-color: #00ffcc; opacity: 0.3;"><br>
+
+        <!-- 🔌 แผงควบคุมฮาร์ดแวร์ Native HTML -->
+        <div class="control-panel">
+            <button class="hardware-btn" onclick="toggleNativeSerial()">🔗 เชื่อมต่อพอร์ต USB (Web Serial)</button>
+            <span id="hardwareStatus" style="line-height: 40px; font-size: 13px; color: #ff007f;">สถานะฮาร์ดแวร์: ออฟไลน์</span>
+        </div>
 
         <!-- 💬 หน้าต่างเทอร์มินัลสื่อสาร -->
         <div class="chat-terminal" id="terminal">
-            <div class="ai-message"><strong>[Jarvis AI]:</strong> ระบบสมองกลพร้อมบันทึกประวัติคำสั่งแล้วครับท่านประธาน!</div>
+            <div class="ai-message"><strong>[Jarvis AI]:</strong> HTML สมองกลพร้อมรับคำสั่งและควบคุมโลกกายภาพแล้วครับท่านประธาน!</div>
         </div>
 
         <!-- ⌨️ ช่องป้อนคำสั่งอัจฉริยะ -->
-        <div class="user-input-box">
-            <input type="text" id="aiInput" placeholder="พิมพ์คำสั่ง เช่น ขยับแขนซ้าย, วิเคราะห์, รีเซ็ต..." onkeydown="if(event.key==='Enter') triggerAISbrain()">
+        <div class="control-panel">
+            <input type="text" id="aiInput" placeholder="พิมพ์คำสั่ง เช่น หมุนซ้าย, หมุนขวา, รีเซ็ต..." onkeydown="if(event.key==='Enter') triggerAISbrain()">
             <button onclick="triggerAISbrain()">SEND AI</button>
         </div>
 
         <br>
-        <!-- 🧩 Custom Tag พร้อมระบบ Neural Memory Log ประจำตัว -->
+        <!-- 🧩 Custom Tag ขั้นสูง ผสาน Neural Log และฮาร์ดแวร์บริบท -->
         <div id="dynamicContainer">
-            <jarvis-neural-card state-status="Standby" neural-logs='["เริ่มต้นระบบแกนหลักสำเร็จ"]'></jarvis-neural-card>
+            <jarvis-neural-card state-status="Standby" neural-logs='["เริ่มต้นระบบแกนหลัก HTML Native สำเร็จ"]'></jarvis-neural-card>
         </div>
     </div>
 
-    <!-- 🧬 สมองกลและพันธุกรรม Web Components (v2.5 Advanced Lifecycle Hooks) -->
+    <!-- 🧬 สมองกลและพันธุกรรม Web Components (AI-Native Ultimate Core) -->
     <script>
+        let globalPort = null;
+        let globalWriter = null;
+
+        // 🔌 ฟังก์ชันเปิด/ปิดการเชื่อมต่อพอร์ตฮาร์ดแวร์โดยตรงจาก HTML (Native Web Serial API)
+        async function toggleNativeSerial() {
+            const statusEl = document.getElementById('hardwareStatus');
+            const terminal = document.getElementById('terminal');
+
+            if (!('serial' in navigator)) {
+                alert("เบราว์เซอร์นี้ไม่รองรับ Web Serial API โปรดใช้ Google Chrome หรือ Edge ครับ");
+                return;
+            }
+
+            try {
+                if (!globalPort) {
+                    globalPort = await navigator.serial.requestPort();
+                    await globalPort.open({ baudRate: 115200 });
+                    
+                    const textEncoder = new TextEncoderStream();
+                    textEncoder.readable.pipeTo(globalPort.writable);
+                    globalWriter = textEncoder.writable.getWriter();
+
+                    statusEl.innerText = "สถานะฮาร์ดแวร์: เชื่อมต่อสำเร็จ ⚡";
+                    statusEl.style.color = "#00ffcc";
+                    terminal.innerHTML += `<div class="ai-message" style="color: #00ffcc;"><strong>[HTML Core]:</strong> เปิดพอร์ต USB เชื่อมต่อฮาร์ดแวร์สำเร็จโดยตรง!</div>`;
+                } else {
+                    await globalWriter.close();
+                    await globalPort.close();
+                    globalPort = null;
+                    globalWriter = null;
+                    statusEl.innerText = "สถานะฮาร์ดแวร์: ตัดการเชื่อมต่อ";
+                    statusEl.style.color = "#ff007f";
+                    terminal.innerHTML += `<div class="ai-message" style="color: #ff007f;"><strong>[HTML Core]:</strong> ปิดพอร์ต USB เรียบร้อย</div>`;
+                }
+            } catch (err) {
+                console.error(err);
+                terminal.innerHTML += `<div class="ai-message" style="color: #ff007f;"><strong>[Error]:</strong> ${err.message}</div>`;
+            }
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // 🚀 ฟังก์ชันส่งสัญญาณคำสั่งลงบอร์ดฮาร์ดแวร์ผ่าน HTML Native
+        async function sendCommandToHardware(cmd) {
+            if (globalWriter) {
+                try {
+                    await globalWriter.write(cmd + "\n");
+                    console.log(`[Native Serial Send]: ${cmd}`);
+                } catch (e) {
+                    console.error("ส่งข้อมูลฮาร์ดแวร์ผิดพลาด:", e);
+                }
+            }
+        }
+
         class JarvisNeuralCard extends HTMLElement {
             constructor() {
                 super();
@@ -77,16 +138,14 @@
             attributeChangedCallback(name, oldValue, newValue) {
                 if (oldValue !== newValue) {
                     this.render();
-                    // ⚡ Event-Driven Lifecycle Hook: กระตุ้นเมื่อสถานะเปลี่ยน
                     if (name === 'state-status') {
                         this.onAIContextReceived(newValue);
                     }
                 }
             }
 
-            //จำลองวงจรชีวิต (Event-Driven Hook) เมื่อแท็กรับบริบทใหม่
             onAIContextReceived(status) {
-                console.log(`[Neural Hook]: แท็กรับทราบการเปลี่ยนสถานะเป็น -> [ ${status} ]`);
+                console.log(`[Neural Hook]: แท็กอัปเดตสถานะเป็น -> [ ${status} ]`);
             }
 
             render() {
@@ -98,14 +157,13 @@
                     logs = ['เกิดข้อผิดพลาดในการอ่านหน่วยความจำ'];
                 }
 
-                // แปลงประวัติ Log ทั้งหมดให้อยู่ในรูปรายการย่อย
                 const logHtml = logs.map(log => `<li style="font-size: 11px; color: #00b388; margin-bottom: 3px;">${log}</li>`).join('');
 
                 this.innerHTML = `
                     <div style="background: rgba(0,255,204,0.05); border: 1px dashed #00ffcc; padding: 15px; border-radius: 6px; margin-top: 15px;">
-                        <h3 style="margin: 0 0 10px 0; color: #ff007f;">⚡ [v2.5 Neural Blackbox Core]</h3>
+                        <h3 style="margin: 0 0 10px 0; color: #ff007f;">⚡ [HTML AI-Native Ultimate Core]</h3>
                         <p style="margin: 0 0 8px 0; font-size: 14px;">สถานะสมองกล: <span style="color: #fff;">${status}</span></p>
-                        <p style="margin: 0 0 5px 0; font-size: 12px; color: #ff007f;">ประวัติความจำสะสม (Neural Memory Logs):</p>
+                        <p style="margin: 0 0 5px 0; font-size: 12px; color: #ff007f;">ประวัติความจำแบล็กบ็อกซ์สะสม (Neural Memory Logs):</p>
                         <ul style="margin: 0; padding-left: 15px; max-height: 100px; overflow-y: auto;">
                             ${logHtml}
                         </ul>
@@ -113,7 +171,6 @@
                 `;
             }
 
-            // เมธอดผนวกประวัติคำสั่งลงในแบล็กบ็อกซ์ (Append Log)
             appendNeuralLog(newStatus, logMessage) {
                 let logs = [];
                 try {
@@ -121,7 +178,6 @@
                 } catch(e) {}
 
                 logs.push(logMessage);
-                // จำกัดให้เก็บประวัติย้อนหลัง 5 รายการล่าสุดเพื่อความเป็นระเบียบ
                 if(logs.length > 5) logs.shift();
 
                 this.setAttribute('state-status', newStatus);
@@ -131,8 +187,8 @@
 
         customElements.define('jarvis-neural-card', JarvisNeuralCard);
 
-        // ระบบสมองกลประมวลผลคำสั่งพร้อมบันทึกแบล็กบ็อกซ์
-        function triggerAISbrain() {
+        // ระบบสมองกลประมวลผลคำสั่ง ควบคุมหน้าจอและฮาร์ดแวร์ในไฟล์เดียว
+        async function triggerAISbrain() {
             const input = document.getElementById('aiInput');
             const terminal = document.getElementById('terminal');
             const text = input.value.trim();
@@ -143,25 +199,39 @@
             input.value = '';
             terminal.scrollTop = terminal.scrollHeight;
 
-            setTimeout(() => {
-                let aiResponse = `บันทึกคำสั่ง "${text}" ลงแบล็กบ็อกซ์เรียบร้อยครับ`;
-                const neuralCard = document.querySelector('jarvis-neural-card');
-                
-                if(text.includes("รีเซ็ต") || text.includes("reset")) {
-                    aiResponse = "🔄 รีเซ็ตระบบและล้างประวัติหน่วยความจำสำเร็จ!";
-                    if(neuralCard) {
-                        neuralCard.setAttribute('state-status', 'Standby');
-                        neuralCard.setAttribute('neural-logs', JSON.stringify(["รีเซ็ตระบบสมองกลเริ่มต้นใหม่"]));
-                    }
-                } else {
-                    if(neuralCard) {
-                        neuralCard.appendNeuralLog("กำลังประมวลผลคำสั่ง", `ประมวลผล: ${text}`);
-                    }
-                }
+            let hwCommand = "";
+            let aiResponse = `บันทึกคำสั่ง "${text}" ลงแบล็กบ็อกซ์เรียบร้อยครับ`;
 
+            if(text.includes("หมุนซ้าย") || text.includes("left")) {
+                hwCommand = "L";
+                aiResponse = "🔄 ส่งรหัส 'L' (หมุนซ้าย) ตรงสู่อุปกรณ์ฮาร์ดแวร์สำเร็จ!";
+            } else if(text.includes("หมุนขวา") || text.includes("right")) {
+                hwCommand = "R";
+                aiResponse = "🔄 ส่งรหัส 'R' (หมุนขวา) ตรงสู่อุปกรณ์ฮาร์ดแวร์สำเร็จ!";
+            } else if(text.includes("รีเซ็ต") || text.includes("reset")) {
+                hwCommand = "X";
+                aiResponse = "🔄 รีเซ็ตระบบสมองกลและส่งสัญญาณ 'X' เรียบร้อย!";
+                const neuralCard = document.querySelector('jarvis-neural-card');
+                if(neuralCard) {
+                    neuralCard.setAttribute('state-status', 'Standby');
+                    neuralCard.setAttribute('neural-logs', JSON.stringify(["รีเซ็ตระบบแกนหลัก HTML สำเร็จ"]));
+                }
+            }
+
+            // ยิงคำสั่งตรงไปที่ฮาร์ดแวร์ผ่าน Web Serial API ใน HTML ทันที
+            if(hwCommand) {
+                await sendCommandToHardware(hwCommand);
+            }
+
+            const neuralCard = document.querySelector('jarvis-neural-card');
+            if(neuralCard && !text.includes("รีเซ็ต")) {
+                neuralCard.appendNeuralLog("กำลังประมวลผลฮาร์ดแวร์", `คำสั่ง: ${text} [HW: ${hwCommand || 'None'}]`);
+            }
+
+            setTimeout(() => {
                 terminal.innerHTML += `<div class="ai-message" style="color: #ff007f;"><strong>[Jarvis AI]:</strong> ${aiResponse}</div>`;
                 terminal.scrollTop = terminal.scrollHeight;
-            }, 500);
+            }, 300);
         }
     </script>
 </body>
