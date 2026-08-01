@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>Jarvis AI-Native HTML Core (AQ-Key Supported Edition)</title>
+    <title>Jarvis AI-Native HTML Core (Latest Model Edition)</title>
     <style>
         body { 
             background: #05050a; 
@@ -45,7 +45,7 @@
 
     <div class="command-center">
         <h1>🧠 JARVIS GEMINI AI-NATIVE CORE</h1>
-        <p>สถานะ: รองรับคีย์รูปแบบใหม่ (AQ.) พร้อมเชื่อมต่อสมองกลและฮาร์ดแวร์</p>
+        <p>สถานะ: อัปเดตโมเดลล่าสุด รองรับคีย์ AQ. และเชื่อมต่อสมองกลเต็มระบบ</p>
         <hr style="border-color: #00ffcc; opacity: 0.3;"><br>
 
         <!-- 🔑 แผงตั้งค่า Gemini API Key -->
@@ -64,7 +64,7 @@
 
         <!-- 💬 หน้าต่างเทอร์มินัลสื่อสาร -->
         <div class="chat-terminal" id="terminal">
-            <div class="ai-message"><strong>[Jarvis AI]:</strong> ระบบอัปเกรดรองรับคีย์ใหม่เรียบร้อยครับท่านประธาน! วางคีย์ AQ. แล้วเริ่มสนทนาได้เลย</div>
+            <div class="ai-message"><strong>[Jarvis AI]:</strong> อัปเดตท่อโมเดลใหม่เรียบร้อยครับท่านประธาน! พร้อมลุยแล้ว</div>
         </div>
 
         <!-- ⌨️ ช่องป้อนคำสั่งอัจฉริยะ -->
@@ -76,11 +76,11 @@
         <br>
         <!-- 🧩 Custom Tag แบล็กบ็อกซ์หน่วยความจำ -->
         <div id="dynamicContainer">
-            <jarvis-neural-card state-status="Active" neural-logs='["อัปเกรดระบบรองรับ AQ. Key สำเร็จ"]'></jarvis-neural-card>
+            <jarvis-neural-card state-status="Active" neural-logs='["อัปเกรดโมเดลสมองกลสำเร็จ"]'></jarvis-neural-card>
         </div>
     </div>
 
-    <!-- 🧬 สมองกลรวมศูนย์ (AQ-Key Compatible Engine) -->
+    <!-- 🧬 สมองกลรวมศูนย์ (Latest Model Engine) -->
     <script>
         let globalPort = null;
         let globalWriter = null;
@@ -276,8 +276,8 @@
                 return;
             }
 
-            // รองรับทั้งคีย์แบบใหม่ (AQ.) และแบบดั้งเดิม
-            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
+            // อัปเดตใช้รุ่น gemini-2.5-flash ตามมาตรฐานปัจจุบัน
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`;
 
             try {
                 const response = await fetch(endpoint, {
@@ -312,9 +312,9 @@
                 }
             } catch (error) {
                 console.error(error);
-                const errReply = "เชื่อมต่อสำเร็จแต่คีย์อาจมีข้อจำกัด โปรดตรวจสอบสิทธิ์การใช้งานคีย์ AQ.";
-                terminal.innerHTML += `<div class="ai-message" style="color: #ff3366;"><strong>[Error]:</strong> ${error.message || errReply}</div>`;
-                speakText("ขออภัยครับ เกิดข้อผิดพลาดในการเชื่อมต่อ");
+                const errReply = "เกิดข้อผิดพลาดในการเชื่อมต่อ: " + error.message;
+                terminal.innerHTML += `<div class="ai-message" style="color: #ff3366;"><strong>[Error]:</strong> ${errReply}</div>`;
+                speakText("ขออภัยครับ เกิดข้อผิดพลาดในการเชื่อมต่อสมองกล");
             }
         }
     </script>
