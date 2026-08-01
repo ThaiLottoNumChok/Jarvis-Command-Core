@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jarvis Industrial Core - Voice & Robot Link</title>
+    <title>Jarvis STEM Robot Arm Control Center</title>
     <style>
         * {
             box-sizing: border-box;
@@ -99,12 +99,18 @@
             align-self: flex-end;
             color: #ffffff;
         }
-        .robot-panel {
+        /* แผงควบคุมแขนกลและสไลเดอร์ */
+        .robot-control-panel {
+            background: rgba(0, 20, 40, 0.95);
+            border-top: 1px solid #00ffcc;
+            padding: 12px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .robot-btn-group {
             display: flex;
             gap: 8px;
-            padding: 8px 15px;
-            background: rgba(0, 20, 40, 0.9);
-            border-top: 1px solid #005544;
             overflow-x: auto;
             align-items: center;
         }
@@ -143,6 +149,28 @@
             0% { opacity: 1; }
             50% { opacity: 0.5; }
             100% { opacity: 1; }
+        }
+        .slider-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 11px;
+        }
+        .slider-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #005544;
+            padding: 6px 10px;
+            border-radius: 4px;
+        }
+        .slider-box label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            color: #88ffcc;
+        }
+        .slider-box input[type=range] {
+            width: 100%;
+            accent-color: #00ffcc;
         }
         .input-area {
             display: flex;
@@ -185,7 +213,7 @@
 
     <div id="login-screen">
         <div class="login-container">
-            <h2>JARVIS VOICE</h2>
+            <h2>JARVIS STEM CORE</h2>
             <div class="input-group">
                 <label for="passcode">SECURITY PASSCODE:</label>
                 <input type="password" id="passcode" value="44104545" placeholder="Enter Code">
@@ -201,27 +229,47 @@
 
     <div id="chat-screen">
         <header>
-            <span>JARVIS ROBOT & VOICE LINK</span>
+            <span>JARVIS ROBOT ARM LINK</span>
             <span id="bridgeStatus" class="factory-status">ONLINE</span>
         </header>
 
         <div class="chat-box" id="chatBox">
             <div class="message jarvis-msg">
-                System Online. พร้อมรับคำสั่งทั้งพิมพ์ พูดคุย และควบคุมแขนกลครับท่านประธาน!
+                System Online. พร้อมรับคำสั่งเสียง ปุ่มลัด สไลเดอร์ และพูดคุยพัฒนาแขนกล LEGO STEM Kit แล้วครับท่านประธาน!
             </div>
         </div>
 
-        <!-- แผงปุ่มลัดสั่งการแขนกล + ปุ่มไมโครโฟนสั่งด้วยเสียง -->
-        <div class="robot-panel">
-            <button class="mic-btn" id="micBtn" onclick="toggleSpeechRecognition()">🎙️ สั่งด้วยเสียง</button>
-            <button class="robot-btn" onclick="sendRobotCommand('HOME')">🏠 Home</button>
-            <button class="robot-btn" onclick="sendRobotCommand('PICK_LEFT')">👈 Pick</button>
-            <button class="robot-btn" onclick="sendRobotCommand('PLACE_RIGHT')">👉 Place</button>
-            <button class="robot-btn" onclick="sendRobotCommand('EMERGENCY_STOP')">🛑 E-STOP</button>
+        <!-- แผงควบคุมแขนกลขั้นเทพ: ปุ่มลัด + สั่งด้วยเสียง + สไลเดอร์ปรับองศาละเอียด -->
+        <div class="robot-control-panel">
+            <div class="robot-btn-group">
+                <button class="mic-btn" id="micBtn" onclick="toggleSpeechRecognition()">🎙️ สั่งด้วยเสียง</button>
+                <button class="robot-btn" onclick="sendRobotCommand('HOME', 90)">🏠 Home</button>
+                <button class="robot-btn" onclick="sendRobotCommand('PICK', 45)">👈 Pick</button>
+                <button class="robot-btn" onclick="sendRobotCommand('PLACE', 135)">👉 Place</button>
+                <button class="robot-btn" onclick="sendRobotCommand('STOP', 90)">🛑 E-STOP</button>
+            </div>
+            <div class="slider-container">
+                <div class="slider-box">
+                    <label><span>ฐาน (Base):</span> <span id="valBase">90°</span></label>
+                    <input type="range" id="rangeBase" min="0" max="180" value="90" oninput="updateSlider('Base', this.value)">
+                </div>
+                <div class="slider-box">
+                    <label><span>ข้อต่อ 1 (Arm 1):</span> <span id="valArm1">90°</span></label>
+                    <input type="range" id="rangeArm1" min="0" max="180" value="90" oninput="updateSlider('Arm1', this.value)">
+                </div>
+                <div class="slider-box">
+                    <label><span>ข้อต่อ 2 (Arm 2):</span> <span id="valArm2">90°</span></label>
+                    <input type="range" id="rangeArm2" min="0" max="180" value="90" oninput="updateSlider('Arm2', this.value)">
+                </div>
+                <div class="slider-box">
+                    <label><span>ที่หนีบ (Claw):</span> <span id="valClaw">90°</span></label>
+                    <input type="range" id="rangeClaw" min="0" max="180" value="90" oninput="updateSlider('Claw', this.value)">
+                </div>
+            </div>
         </div>
 
         <div class="input-area">
-            <input type="text" id="userInput" placeholder="พิมพ์สั่งงานหรือคุยกับ Jarvis..." onkeypress="handleKeyPress(event)">
+            <input type="text" id="userInput" placeholder="พิมพ์คุยกับ Jarvis หรือสั่งงาน..." onkeypress="handleKeyPress(event)">
             <button onclick="sendMessage()">SEND</button>
         </div>
     </div>
@@ -245,16 +293,13 @@
             }
         }
 
-        // ตั้งค่าระบบฟังเสียงพูด (Speech Recognition)
+        // ระบบเสียง Speech Recognition
         function initSpeechRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                console.log("Browser does not support speech recognition.");
-                return;
-            }
+            if (!SpeechRecognition) return;
 
             recognition = new SpeechRecognition();
-            recognition.lang = 'th-TH'; // รองรับภาษาไทย (หรือสลับเป็น en-US ได้)
+            recognition.lang = 'th-TH';
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
 
@@ -263,27 +308,21 @@
                 document.getElementById('userInput').value = speechText;
                 stopListeningEffect();
                 
-                // ตรวจจับคำสั่งเสียงด่วนสำหรับแขนกล
                 if (speechText.includes('โฮม') || speechText.toLowerCase().includes('home')) {
-                    sendRobotCommand('HOME');
+                    sendRobotCommand('HOME', 90);
                 } else if (speechText.includes('หยิบ') || speechText.toLowerCase().includes('pick')) {
-                    sendRobotCommand('PICK_LEFT');
+                    sendRobotCommand('PICK', 45);
                 } else if (speechText.includes('วาง') || speechText.toLowerCase().includes('place')) {
-                    sendRobotCommand('PLACE_RIGHT');
+                    sendRobotCommand('PLACE', 135);
                 } else if (speechText.includes('หยุด') || speechText.toLowerCase().includes('stop')) {
-                    sendRobotCommand('EMERGENCY_STOP');
+                    sendRobotCommand('STOP', 90);
                 } else {
-                    sendMessage(); // ถ้าไม่ใช่คำสั่งแขนกล ให้ส่งถาม Gemini ตามปกติ
+                    sendMessage();
                 }
             };
 
-            recognition.onerror = function(event) {
-                stopListeningEffect();
-            };
-
-            recognition.onend = function() {
-                stopListeningEffect();
-            };
+            recognition.onerror = () => stopListeningEffect();
+            recognition.onend = () => stopListeningEffect();
         }
 
         function toggleSpeechRecognition() {
@@ -291,7 +330,6 @@
                 alert("เบราว์เซอร์นี้ไม่รองรับการสั่งงานด้วยเสียงครับ");
                 return;
             }
-
             if (isListening) {
                 recognition.stop();
                 stopListeningEffect();
@@ -315,19 +353,33 @@
             micBtn.textContent = "🎙️ สั่งด้วยเสียง";
         }
 
-        // ฟังก์ชันสั่งงานแขนกล
-        function sendRobotCommand(action) {
+        // ฟังก์ชันส่งคำสั่งปุ่มลัด
+        function sendRobotCommand(action, value) {
             const chatBox = document.getElementById('chatBox');
-            const jarvisMsgDiv = document.createElement('div');
-            jarvisMsgDiv.className = 'message jarvis-msg';
-            jarvisMsgDiv.textContent = `[คำสั่งแขนกล]: กำลังส่งสัญญาณสั่งการ ${action}...`;
-            chatBox.appendChild(jarvisMsgDiv);
+            const msg = document.createElement('div');
+            msg.className = 'message jarvis-msg';
+            msg.textContent = `[คำสั่งแขนกล]: ส่งคำสั่ง ${action} (${value}°) ไปยังระบบควบคุมแล้วครับ! 🦾`;
+            chatBox.appendChild(msg);
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            setTimeout(() => {
-                jarvisMsgDiv.textContent = `[สำเร็จ]: แขนกลปฏิบัติการคำสั่ง ${action} เรียบร้อยครับท่านประธาน! 🦾⚡️`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 800);
+            // ส่งผ่าน HTTP ไปยัง Python Bridge Server (ถ้าต่อใช้งานจริง)
+            fetch('http://localhost:5000/api/command', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: action, value: value })
+            }).catch(err => console.log("Bridge server offline (Simulation mode active)"));
+        }
+
+        // ฟังก์ชันควบคุมผ่านสไลเดอร์ปรับองศาละเอียด
+        function updateSlider(axis, val) {
+            document.getElementById('val' + axis).textContent = val + '°';
+            
+            // ส่งค่าองศาไปยัง Python Bridge / ESP32
+            fetch('http://localhost:5000/api/command', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ axis: axis, angle: parseInt(val) })
+            }).catch(err => console.log("Slider sync simulation mode"));
         }
 
         async function sendMessage() {
@@ -336,7 +388,6 @@
             if (!text) return;
 
             const chatBox = document.getElementById('chatBox');
-            
             const userMsgDiv = document.createElement('div');
             userMsgDiv.className = 'message user-msg';
             userMsgDiv.textContent = text;
@@ -357,7 +408,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         contents: [{
-                            parts: [{ text: "คุณคือ Jarvis ผู้ช่วยอัจฉริยะส่วนตัวของท่านประธาน จงตอบสั้น กระชับ เป็นกันเอง: " + text }]
+                            parts: [{ text: "คุณคือ Jarvis ผู้ช่วยอัจฉริยะส่วนตัวของท่านประธาน เชี่ยวชาญเรื่องแขนกลเลโก้และหุ่นยนต์ STEM ตอบสั้น กระชับ เป็นกันเอง: " + text }]
                         }]
                     })
                 });
@@ -378,9 +429,7 @@
         }
 
         function handleKeyPress(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
+            if (e.key === 'Enter') sendMessage();
         }
     </script>
 
