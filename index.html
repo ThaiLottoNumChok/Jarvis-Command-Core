@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>Jarvis AI-Native HTML Core</title>
+    <title>Jarvis AI-Native HTML Core (Advanced State Edition)</title>
     <style>
         body { 
             background: #05050a; 
@@ -11,10 +11,7 @@
             padding: 25px; 
             margin: 0;
         }
-        .command-center {
-            max-width: 800px;
-            margin: auto;
-        }
+        .command-center { max-width: 800px; margin: auto; }
         .chat-terminal {
             background: rgba(0, 10, 20, 0.9);
             border: 1px solid #00ffcc;
@@ -25,92 +22,88 @@
             margin-bottom: 20px;
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
         }
-        .ai-message {
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-        .user-input-box {
-            display: flex;
-            gap: 10px;
-        }
+        .ai-message { margin-bottom: 10px; line-height: 1.5; }
+        .user-input-box { display: flex; gap: 10px; }
         input[type="text"] {
-            flex: 1;
-            background: #000;
-            border: 1px solid #00ffcc;
-            color: #00ffcc;
-            padding: 12px;
-            border-radius: 4px;
-            font-family: monospace;
-            outline: none;
+            flex: 1; background: #000; border: 1px solid #00ffcc;
+            color: #00ffcc; padding: 12px; border-radius: 4px;
+            font-family: monospace; outline: none;
         }
         button {
-            background: rgba(0, 255, 204, 0.2);
-            border: 1px solid #00ffcc;
-            color: #00ffcc;
-            padding: 12px 25px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
+            background: rgba(0, 255, 204, 0.2); border: 1px solid #00ffcc;
+            color: #00ffcc; padding: 12px 25px; border-radius: 4px;
+            cursor: pointer; font-weight: bold; transition: 0.3s;
         }
-        button:hover {
-            background: #00ffcc;
-            color: #000;
-        }
+        button:hover { background: #00ffcc; color: #000; }
     </style>
 </head>
 <body>
 
     <div class="command-center">
-        <h1>🧠 JARVIS AI-NATIVE HTML CORE</h1>
-        <p>สถานะ: ผสานรากฐาน HTML เข้ากับโครงข่ายสมองกลอัจฉริยะอย่างไร้รอยต่อ</p>
+        <h1>🧠 JARVIS AI-NATIVE HTML CORE v2</h1>
+        <p>สถานะ: ฝังระบบจดจำสถานะ (State Memory) และวิวัฒนาการตัวเองภายในแท็ก</p>
         <hr style="border-color: #00ffcc; opacity: 0.3;"><br>
 
-        <!-- 💬 หน้าต่างเทอร์มินัลสื่อสารกับสมองกล Jarvis -->
+        <!-- 💬 หน้าต่างเทอร์มินัลสื่อสาร -->
         <div class="chat-terminal" id="terminal">
-            <div class="ai-message"><strong>[Jarvis AI]:</strong> ระบบสมองกลพร้อมเชื่อมต่อครับท่านประธาน พิมพ์สั่งการหรือปรึกษาโครงสร้างโค้ดได้เลย!</div>
+            <div class="ai-message"><strong>[Jarvis AI]:</strong> ระบบสมองกลพร้อมสแตนด์บายครับท่านประธาน!</div>
         </div>
 
         <!-- ⌨️ ช่องป้อนคำสั่งอัจฉริยะ -->
         <div class="user-input-box">
-            <input type="text" id="aiInput" placeholder="พิมพ์คำสั่งหรือถามสมองกล Jarvis ที่นี่..." onkeydown="if(event.key==='Enter') triggerAISbrain()">
+            <input type="text" id="aiInput" placeholder="พิมพ์คำสั่ง เช่น รีเซ็ต, วิเคราะห์..." onkeydown="if(event.key==='Enter') triggerAISbrain()">
             <button onclick="triggerAISbrain()">SEND AI</button>
         </div>
 
         <br>
-        <!-- 🧩 พื้นที่แสดงผล Custom Tags ที่สมองกลสร้างหรือควบคุม -->
+        <!-- 🧩 Custom Tag ที่มี State Memory ประจำตัว (ไม่ต้องง้อ Script นอก) -->
         <div id="dynamicContainer">
-            <jarvis-neural-card title="ระบบวิเคราะห์โค้ด" status="กำลังทำงานปกติ"></jarvis-neural-card>
+            <jarvis-neural-card state-status="Standby" state-memory="ศูนย์กลางข้อมูลพร้อม"></jarvis-neural-card>
         </div>
     </div>
 
-    <!-- 🧬 สมองกลและพันธุกรรม Web Components -->
+    <!-- 🧬 สมองกลและพันธุกรรม Web Components (รองรับ Reactive State) -->
     <script>
-        // 1. สร้าง Custom Element แบบ AI-Driven (แท็กอัจฉริยะปรับเปลี่ยนตัวเองได้)
         class JarvisNeuralCard extends HTMLElement {
             constructor() {
                 super();
-                const title = this.getAttribute('title') || 'Neural Core';
-                const status = this.getAttribute('status') || 'Standby';
+                this.render();
+            }
+
+            // สังเกตการณ์การเปลี่ยนแปลงของ Attribute (Reactive State Binding)
+            static get observedAttributes() {
+                return ['state-status', 'state-memory'];
+            }
+
+            attributeChangedCallback(name, oldValue, newValue) {
+                if (oldValue !== newValue) {
+                    this.render(); // อัปเดตโครงสร้างอัตโนมัติเมื่อ State เปลี่ยน
+                }
+            }
+
+            render() {
+                const status = this.getAttribute('state-status') || 'Standby';
+                const memory = this.getAttribute('state-memory') || 'ไม่มีข้อมูล';
 
                 this.innerHTML = `
                     <div style="background: rgba(0,255,204,0.05); border: 1px dashed #00ffcc; padding: 15px; border-radius: 6px; margin-top: 15px;">
-                        <h3 style="margin: 0 0 10px 0; color: #ff007f;">⚡ [Custom Tag]: ${title}</h3>
-                        <p style="margin: 0; font-size: 14px;">สถานะสมองกล: <span id="neuralStatus" style="color: #fff;">${status}</span></p>
+                        <h3 style="margin: 0 0 10px 0; color: #ff007f;">⚡ [AI-Native Tag Core]</h3>
+                        <p style="margin: 0 0 5px 0; font-size: 14px;">สถานะสมองกล: <span style="color: #fff;">${status}</span></p>
+                        <p style="margin: 0; font-size: 12px; color: #00b388;">หน่วยความจำภายในแท็ก: [ ${memory} ]</p>
                     </div>
                 `;
             }
 
-            // เมธอดให้สมองกลสั่งอัปเดตสถานะในแท็กได้โดยตรง
-            updateNeuralStatus(newStatus) {
-                this.querySelector('#neuralStatus').innerText = newStatus;
+            // เมธอดอัปเดต State ภายในตัวเองโดยตรงตามแนวคิด Living Intelligence
+            setNeuralState(newStatus, newMemory) {
+                this.setAttribute('state-status', newStatus);
+                this.setAttribute('state-memory', newMemory);
             }
         }
 
-        // ลงทะเบียนแท็กใหม่เข้าสู่ระบบเบราว์เซอร์
         customElements.define('jarvis-neural-card', JarvisNeuralCard);
 
-        // 2. จำลองระบบสมองกลประมวลผล (เตรียมเชื่อมต่อ Gemini API เต็มรูปแบบ)
+        // ระบบสมองกลประมวลผลคำสั่ง
         function triggerAISbrain() {
             const input = document.getElementById('aiInput');
             const terminal = document.getElementById('terminal');
@@ -118,27 +111,24 @@
             
             if(!text) return;
 
-            // แสดงข้อความฝั่งผู้ใช้
             terminal.innerHTML += `<div class="ai-message" style="color: #00ffcc;"><strong>[ท่านประธาน]:</strong> ${text}</div>`;
             input.value = '';
             terminal.scrollTop = terminal.scrollHeight;
 
-            // จำลองการคิดวิเคราะห์ของสมองกล Jarvis
             setTimeout(() => {
-                let aiResponse = `รับทราบครับ กำลังประมวลผลคำสั่ง "${text}" ผ่านโครงข่ายสมองกล HTML Core`;
-                
-                // ตัวอย่างการให้สมองกลสั่งอัปเดต Custom Tag อัตโนมัติ
+                let aiResponse = `ประมวลผลคำสั่ง "${text}" เรียบร้อยครับ`;
                 const neuralCard = document.querySelector('jarvis-neural-card');
+                
                 if(text.includes("รีเซ็ต") || text.includes("reset")) {
-                    aiResponse = "รีเซ็ตระบบสมองกลและโครงสร้างแท็กเรียบร้อยครับ!";
-                    neuralCard.updateNeuralStatus("รีเซ็ตค่าเริ่มต้นแล้ว");
+                    aiResponse = "🔄 รีเซ็ตระบบสมองกลและล้างค่าหน่วยความจำสำเร็จ!";
+                    if(neuralCard) neuralCard.setNeuralState("Standby", "ล้างความจำเริ่มต้นเรียบร้อย");
                 } else {
-                    neuralCard.updateNeuralStatus(`กำลังประมวลผล: ${text}`);
+                    if(neuralCard) neuralCard.setNeuralState("กำลังประมวลผล", `รับค่าคำสั่ง: ${text}`);
                 }
 
                 terminal.innerHTML += `<div class="ai-message" style="color: #ff007f;"><strong>[Jarvis AI]:</strong> ${aiResponse}</div>`;
                 terminal.scrollTop = terminal.scrollHeight;
-            }, 600);
+            }, 500);
         }
     </script>
 </body>
